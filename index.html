@@ -99,17 +99,12 @@
     color:var(--dark-text-dim);padding:10px 12px 6px}
   .ft-tree{list-style:none;margin:0;padding:0 6px 8px}
   .ft-tree li{border-radius:5px}
-  .ft-file,.ft-folder>.ft-row{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;
+  .ft-file{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;
     cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ft-file:hover,.ft-folder>.ft-row:hover{background:var(--dark-active)}
+  .ft-file:hover{background:var(--dark-active)}
   .ft-file.active{background:var(--dark-active);color:var(--dark-text-bright);font-weight:600;
     box-shadow:inset 2px 0 0 var(--green-line)}
-  .ft-file.dim{color:var(--dark-text-dim);padding-left:30px}
-  .ft-file .icn,.ft-folder .icn{opacity:.8;flex:0 0 auto}
-  .ft-folder .chev{transition:transform .15s;flex:0 0 auto}
-  .ft-folder.open .chev{transform:rotate(90deg)}
-  .ft-sub{list-style:none;margin:0;padding:0;max-height:0;overflow:hidden}
-  .ft-folder.open .ft-sub{max-height:200px}
+  .ft-file .icn{opacity:.8;flex:0 0 auto}
 
   .ft-outline{border-top:1px solid var(--dark-border);padding-bottom:8px}
   .ft-outline-toggle .chev{transition:transform .15s}
@@ -189,6 +184,13 @@
   .tex-page a{color:#111}
   .tex-skills{font-size:.96em;line-height:1.5}
   .tex-skills strong{font-weight:bold}
+  .tex-p{margin:6px 0;font-size:.97em;line-height:1.42}
+
+  /* \includegraphics placeholder frame */
+  .tex-figure{margin:12px auto;text-align:center}
+  .tex-figure-frame{width:140px;height:140px;margin:0 auto;border:2px dashed #c3c6cb;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;color:#a7abb1;background:#fafafa}
+  .tex-figure-caption{margin-top:5px;font-size:.72em;color:#9599a0;font-family:var(--mono)}
 
   /* error box (compile failure) */
   .tex-error{max-width:720px;margin:0 auto;background:#fff3f3;border:1px solid #f3b1b1;
@@ -246,7 +248,7 @@
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <span class="brand"><span class="logo">P</span>Pranav&nbsp;Tikkawar</span>
-    <span class="crumb">/ <b>main.tex</b></span>
+    <span class="crumb">/ <b id="crumbFile">main.tex</b></span>
   </div>
   <div class="tb-right">
     <button class="tb-btn ghost" title="History">
@@ -305,26 +307,17 @@
   <div class="filetree" id="filetree">
     <div class="ft-section-label" style="cursor:default">Files</div>
     <ul class="ft-tree">
-      <li class="ft-file active" tabindex="0">
+      <li class="ft-file active" data-file="main.tex" tabindex="0">
         <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>main.tex
       </li>
-      <li class="ft-folder" id="sectionsFolder">
-        <div class="ft-row" tabindex="0">
-          <svg class="chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>
-          <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M10 4H2v16h20V6H12l-2-2z"/></svg>sections
-        </div>
-        <ul class="ft-sub">
-          <li class="ft-file dim">education.tex</li>
-          <li class="ft-file dim">experience.tex</li>
-          <li class="ft-file dim">projects.tex</li>
-          <li class="ft-file dim">skills.tex</li>
-        </ul>
+      <li class="ft-file" data-file="about_me.tex" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>about_me.tex
       </li>
-      <li class="ft-file" tabindex="0">
+      <li class="ft-file" data-file="cv.tex" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>cv.tex
+      </li>
+      <li class="ft-file" style="opacity:.55;cursor:default" tabindex="0">
         <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>references.bib
-      </li>
-      <li class="ft-file" tabindex="0">
-        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>logo.png
       </li>
     </ul>
     <div class="ft-outline open" id="outlineSection">
@@ -337,7 +330,7 @@
 
   <div class="pane" id="editor">
     <div class="pane-top">
-      <span class="tag">main.tex</span>
+      <span class="tag" id="editorTag">main.tex</span>
       <span class="autocompile" id="autocompile"><span class="dot-live"></span>Auto Compile: On</span>
     </div>
     <textarea id="src"></textarea>
@@ -345,7 +338,7 @@
   <div class="pane" id="divider" title="Drag to resize"></div>
   <div class="pane" id="preview">
     <div class="pane-top">
-      <span class="tag">main.pdf</span>
+      <span class="tag" id="pdfTag">main.pdf</span>
       <div class="pdf-nav">
         <button id="pgPrev" aria-label="Previous page">‹</button><span>1 / 1</span><button id="pgNext" aria-label="Next page">›</button>
       </div>
@@ -371,10 +364,82 @@
   </div>
 </div>
 
-<!-- CV source, kept raw so entities aren't decoded -->
-<script type="text/plain" id="seed">
+<!-- three documents, kept raw so entities aren't decoded -->
+<script type="text/plain" id="seed-main">
 %-------------------------
-% Pranav Tikkawar — resume.tex
+% Pranav Tikkawar — main.tex
+% This is the landing page of the site. Edit anything on the left, then hit Recompile.
+%-------------------------
+\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\huge \textbf{Pranav Tikkawar}} \\
+    \vspace{2pt}
+    New Brunswick, NJ \\
+    \vspace{6pt}
+    \includegraphics[width=0.3\linewidth]{photos/profile.jpg}
+    \vspace{6pt} \\
+    \href{tel:1-732-266-4858}{732-266-4858} $|$
+    \href{mailto:pt422@scarletmail.rutgers.edu}{pt422@scarletmail.rutgers.edu} $|$
+    \href{https://www.linkedin.com/in/pranav-tikkawar/}{linkedin.com/in/pranav-tikkawar} $|$
+    \href{https://github.com/Shadowknight9284}{github.com/Shadowknight9284}
+\end{center}
+
+\section{Welcome}
+This whole site is a document, not a screenshot of one. The pane on the left is a real
+editor; the pane on the right is a small LaTeX interpreter running in your browser that
+recompiles as you type.
+
+Two other documents live in the file tree on the left:
+
+\resumeItemListStart
+  \resumeItem{\textbf{about\_me.tex} --- who I am outside of a resume: interests, what I'm building, what I'm reading right now.}
+  \resumeItem{\textbf{cv.tex} --- the traditional CV: education, experience, and projects.}
+\resumeItemListEnd
+
+Open either one to keep reading.
+\end{document}
+</script>
+
+<script type="text/plain" id="seed-about">
+%-------------------------
+% Pranav Tikkawar — about_me.tex
+% Fill in the bracketed placeholders below, then hit Recompile.
+%-------------------------
+\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\huge \textbf{About Me}} \\
+    \vspace{6pt}
+    \includegraphics[width=0.32\linewidth]{photos/headshot.jpg}
+\end{center}
+
+\section{About Me}
+[Write 2--3 sentences about your background, what drives you, and what you're working
+toward. This is the one place on the site that isn't a bullet list --- write it like
+you're talking to someone.]
+
+\section{Interests}
+\resumeItemListStart
+  \resumeItem{[Hobby or interest #1 --- what it is and why you like it.]}
+  \resumeItem{[Hobby or interest #2.]}
+  \resumeItem{[Hobby or interest #3.]}
+\resumeItemListEnd
+
+\section{Currently}
+\resumeItemListStart
+  \resumeItem{\textbf{Learning:} [what you're picking up right now]}
+  \resumeItem{\textbf{Reading:} [book / paper / blog]}
+  \resumeItem{\textbf{Building:} [side project]}
+\resumeItemListEnd
+
+% Swap the \includegraphics path above for a real, hosted photo whenever you have one.
+\end{document}
+</script>
+
+<script type="text/plain" id="seed-cv">
+%-------------------------
+% Pranav Tikkawar — cv.tex
 % Edit anything on the left, then hit Recompile.
 %-------------------------
 \documentclass[letterpaper,10pt]{article}
@@ -482,6 +547,11 @@ var ResumeTeX = (function () {
     scshape:"tex-sc",bfseries:"tex-bf",itshape:"tex-it",it:"tex-it",bf:"tex-bf",sc:"tex-sc"};
   var WRAP={textbf:"strong",textit:"em",emph:"em",underline:"u",texttt:"code",textsc:"span"};
   function unescapeUrl(u){return u.replace(/\\([%&#_${}])/g,"$1");}
+  function figureHtml(path){return '<div class="tex-figure"><div class="tex-figure-frame">'+
+    '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6">'+
+    '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/>'+
+    '<path d="M21 15l-5-4-4 3-3-2-6 5"/></svg></div>'+
+    '<div class="tex-figure-caption">'+escText(path)+'</div></div>';}
   function renderMath(x){return x.replace(/\\bullet/g,"•").replace(/\\cdot/g,"·")
     .replace(/\\times/g,"×").replace(/\\%/g,"%").replace(/[{}]/g,"")
     .replace(/\\[a-zA-Z]+/g,"").replace(/[&<>]/g,escChar);}
@@ -496,6 +566,8 @@ var ResumeTeX = (function () {
         out+='<a href="'+escText(unescapeUrl(a.args[0].trim()))+'" target="_blank" rel="noopener">'+inline(a.args[1])+"</a>";i=a.next;continue;}
       if(name==="url"){var u=readArgs(s,j,1),uu=escText(unescapeUrl(u.args[0].trim()));
         out+='<a href="'+uu+'" target="_blank" rel="noopener">'+uu+"</a>";i=u.next;continue;}
+      if(name==="includegraphics"){var jj=skipOptional(s,j),ig=readArgs(s,jj,1);
+        out+=figureHtml(ig.args[0].trim());i=ig.next;continue;}
       if(WRAP.hasOwnProperty(name)){var g=readArgs(s,j,1),tag=WRAP[name],cl=name==="textsc"?' class="tex-sc"':"";
         out+="<"+tag+cl+">"+inline(g.args[0])+"</"+tag+">";i=g.next;continue;}
       if(name==="item"){i=j;out+=out&&!/(?:<br>|>)\s*$/.test(out)?" ":"";continue;}
@@ -541,25 +613,41 @@ var ResumeTeX = (function () {
             '<span class="tex-left">'+inline(p2.args[0])+'</span><span class="tex-right">'+inline(p2.args[1])+
             '</span></div></div>';i=p2.next;continue;}
           case "resumeItem":case "resumeSubItem":{var it=readArgs(body,j,1);out+="<li>"+inline(it.args[0])+"</li>";i=it.next;continue;}
+          case "includegraphics":{var jj=skipOptional(body,j),ig=readArgs(body,jj,1);
+            out+=figureHtml(ig.args[0].trim());i=ig.next;continue;}
           case "vspace":case "hspace":{var w=skipWs(body,j);if(body[w]==="{"){var vg=readGroup(body,w);i=vg.next;}else i=j;continue;}
           case "end":{var ce=readArgs(body,j,1);i=ce.next;continue;}
           default:i=j;continue;}}
-      i++;}
+      var pstart=i;
+      while(i<n&&body[i]!=="\\"){i++;}
+      var paras=body.slice(pstart,i).split(/\n[ \t]*\n/);
+      for(var pi=0;pi<paras.length;pi++){var ptext=paras[pi].trim();
+        if(ptext)out+='<p class="tex-p">'+inline(ptext)+"</p>";}
+      continue;}
     return out;}
   return {compile:compile};
 })();
 
 /* ================= wiring ================= */
 (function(){
-  var seed = document.getElementById("seed").textContent.replace(/^\s*\n/,"");
+  function seedText(id){ return document.getElementById(id).textContent.replace(/^\s*\n/,""); }
+  var docs = {
+    "main.tex": seedText("seed-main"),
+    "about_me.tex": seedText("seed-about"),
+    "cv.tex": seedText("seed-cv")
+  };
+  var activeFile = "main.tex";
   var ta = document.getElementById("src");
-  ta.value = seed;
+  ta.value = docs[activeFile];
   var page = document.getElementById("page");
   var status = document.getElementById("status");
   var statusTxt = document.getElementById("status-txt");
   var work = document.getElementById("work");
   var rail = document.getElementById("rail");
   var filetree = document.getElementById("filetree");
+  var editorTag = document.getElementById("editorTag");
+  var pdfTag = document.getElementById("pdfTag");
+  var crumbFile = document.getElementById("crumbFile");
   var outlineList = document.getElementById("outlineList");
   var logsDrawer = document.getElementById("logsDrawer");
   var logsSummary = document.getElementById("logsSummary");
@@ -571,6 +659,22 @@ var ResumeTeX = (function () {
   var cm = null;
 
   function CM(){ return cm || { getValue:function(){return ta.value;} }; }
+  function setActiveValue(v){ if(cm) cm.setValue(v); else ta.value=v; }
+
+  /* ---- multi-file switching ---- */
+  function switchFile(name){
+    if(name===activeFile || !docs.hasOwnProperty(name)) return;
+    docs[activeFile] = CM().getValue();
+    activeFile = name;
+    setActiveValue(docs[name]);
+    editorTag.textContent = name;
+    pdfTag.textContent = name.replace(/\.tex$/, ".pdf");
+    crumbFile.textContent = name;
+    document.querySelectorAll(".ft-file[data-file]").forEach(function(el){
+      el.classList.toggle("active", el.dataset.file===name);
+    });
+    doCompile(true);
+  }
 
   /* ---- outline: derive \section{...} titles from raw source ---- */
   function extractOutline(src){
@@ -609,7 +713,7 @@ var ResumeTeX = (function () {
     logsIcon.innerHTML = '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
     logsHeadline.textContent = "This project compiled successfully";
     logsCount.textContent = "0 errors, 0 warnings";
-    logsText.textContent = "Compiling main.tex...\nResolved sections/ includes.\nRendering to main.pdf...\nOutput written on main.pdf.\nDone.";
+    logsText.textContent = "Compiling "+activeFile+"...\nRendering to "+activeFile.replace(/\.tex$/,".pdf")+"...\nOutput written.\nDone.";
   }
   function setLogsError(message){
     logsSummary.classList.add("err");
@@ -737,9 +841,12 @@ var ResumeTeX = (function () {
     });
   });
 
-  // sections/ folder expand-collapse
-  document.getElementById("sectionsFolder").addEventListener("click",function(){
-    this.classList.toggle("open");
+  // file tree: click (or Enter) a file to switch the editor + preview to it
+  document.querySelectorAll(".ft-file[data-file]").forEach(function(el){
+    el.addEventListener("click",function(){ switchFile(el.dataset.file); });
+    el.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); switchFile(el.dataset.file); }
+    });
   });
 
   // outline drawer expand-collapse
