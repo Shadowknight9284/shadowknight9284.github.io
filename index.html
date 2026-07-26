@@ -100,11 +100,15 @@
   .ft-tree{list-style:none;margin:0;padding:0 6px 8px}
   .ft-tree li{border-radius:5px}
   .ft-file{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;
-    cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    cursor:pointer;overflow:hidden}
   .ft-file:hover{background:var(--dark-active)}
   .ft-file.active{background:var(--dark-active);color:var(--dark-text-bright);font-weight:600;
     box-shadow:inset 2px 0 0 var(--green-line)}
   .ft-file .icn{opacity:.8;flex:0 0 auto}
+  .ft-file-label{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+  .ft-file-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ft-file-sub{font-size:10px;font-weight:400;color:var(--dark-text-dim);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
 
   .ft-outline{border-top:1px solid var(--dark-border);padding-bottom:8px}
   .ft-outline-toggle .chev{transition:transform .15s}
@@ -185,6 +189,8 @@
   .tex-skills{font-size:.96em;line-height:1.5}
   .tex-skills strong{font-weight:bold}
   .tex-p{margin:6px 0;font-size:.97em;line-height:1.42}
+  .tex-section+.tex-p::first-letter{float:left;font-family:'CM Serif',Georgia,serif;
+    font-size:2.6em;line-height:.78;font-weight:bold;padding:2px 6px 0 0}
 
   /* \includegraphics placeholder frame */
   .tex-figure{margin:12px auto;text-align:center}
@@ -308,16 +314,20 @@
     <div class="ft-section-label" style="cursor:default">Files</div>
     <ul class="ft-tree">
       <li class="ft-file active" data-file="main.tex" tabindex="0">
-        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>main.tex
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">main.tex</span><span class="ft-file-sub">start here</span></span>
       </li>
       <li class="ft-file" data-file="about_me.tex" tabindex="0">
-        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>about_me.tex
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">about_me.tex</span><span class="ft-file-sub">the person, not just the résumé</span></span>
       </li>
       <li class="ft-file" data-file="cv.tex" tabindex="0">
-        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>cv.tex
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">cv.tex</span><span class="ft-file-sub">the traditional format</span></span>
       </li>
       <li class="ft-file" style="opacity:.55;cursor:default" tabindex="0">
-        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>references.bib
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">references.bib</span></span>
       </li>
     </ul>
     <div class="ft-outline open" id="outlineSection">
@@ -374,30 +384,24 @@
 \begin{document}
 \begin{center}
     {\huge \textbf{Pranav Tikkawar}} \\
-    \vspace{2pt}
-    New Brunswick, NJ \\
-    \vspace{6pt}
-    \includegraphics[width=0.3\linewidth]{photos/profile.jpg}
-    \vspace{6pt} \\
-    \href{tel:1-732-266-4858}{732-266-4858} $|$
-    \href{mailto:pt422@scarletmail.rutgers.edu}{pt422@scarletmail.rutgers.edu} $|$
-    \href{https://www.linkedin.com/in/pranav-tikkawar/}{linkedin.com/in/pranav-tikkawar} $|$
-    \href{https://github.com/Shadowknight9284}{github.com/Shadowknight9284}
+    \vspace{4pt}
+    {\large New Brunswick, NJ}
 \end{center}
 
 \section{Welcome}
-This whole site is a document, not a screenshot of one. The pane on the left is a real
-editor; the pane on the right is a small LaTeX interpreter running in your browser that
-recompiles as you type.
+This whole site is one interactive document, not a screenshot of one. The pane on the
+left is a real editor; the pane on the right is a small LaTeX interpreter, written from
+scratch, running in your browser and recompiling as you type. Break something in the
+source and it will tell you exactly that, in the log drawer below the page, instead of
+quietly failing.
 
-Two other documents live in the file tree on the left:
+There are two other documents open in this project, both a click away in the file tree.
+\textbf{about\_me.tex} is the version of me that doesn't fit inside a resume --- what I
+care about outside of work, and what I'm currently building or reading. \textbf{cv.tex}
+is the traditional format: education, experience, projects, and how to reach me.
 
-\resumeItemListStart
-  \resumeItem{\textbf{about\_me.tex} --- who I am outside of a resume: interests, what I'm building, what I'm reading right now.}
-  \resumeItem{\textbf{cv.tex} --- the traditional CV: education, experience, and projects.}
-\resumeItemListEnd
-
-Open either one to keep reading.
+Start wherever you'd naturally start with a person: read a little, then look at what
+they've actually done.
 \end{document}
 </script>
 
@@ -432,6 +436,9 @@ you're talking to someone.]
   \resumeItem{\textbf{Reading:} [book / paper / blog]}
   \resumeItem{\textbf{Building:} [side project]}
 \resumeItemListEnd
+
+For the same story told as a traditional CV --- education, experience, projects --- open
+cv.tex.
 
 % Swap the \includegraphics path above for a real, hosted photo whenever you have one.
 \end{document}
