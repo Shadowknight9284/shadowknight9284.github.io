@@ -1,0 +1,333 @@
+%-------------------------
+% Resume / Master CV in LaTeX
+% Based on Jake Gutierrez resume template
+%------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.55in}
+\addtolength{\evensidemargin}{-0.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\topmargin}{-0.6in}
+\addtolength{\textheight}{1.1in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+% Ensure PDF is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\footnotesize{#1\vspace{-1pt}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\footnotesize #3} & \textit{\footnotesize #4} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \vspace{-4pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\footnotesize #1} & \textit{\footnotesize #2} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \vspace{-4pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \footnotesize #1 & #2 \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-3pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.12in, label={}, itemsep=1pt, topsep=1pt]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.15in, itemsep=1pt, topsep=1pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+%-------------------------------------------
+%%%%%%  DOCUMENT STARTS HERE  %%%%%%%%%%%%%%
+\begin{document}
+
+\begin{center}
+    {\huge \textbf{Pranav Tikkawar}} \\
+    \vspace{2pt}
+    New Brunswick, NJ \\
+    \vspace{1pt}
+    \href{tel:1-732-266-4858}{732-266-4858} $|$
+    \href{mailto:pt422@scarletmail.rutgers.edu}{pt422@scarletmail.rutgers.edu} $|$
+    \href{https://www.linkedin.com/in/pranav-tikkawar/}{linkedin.com/in/pranav-tikkawar} $|$
+    \href{https://github.com/Shadowknight9284}{github.com/Shadowknight9284}
+\end{center}
+
+%------------------------------------------
+% Education
+%------------------------------------------
+\section{Education}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {Rutgers, The State University of New Jersey, Honors College}{New Brunswick, NJ}
+  {B.S. in Computer Science, Mathematics, Data Science, and Statistics; GPA: 3.84/4.00}{May 2027}
+  \resumeItemListStart
+    \resumeItem{Graduate coursework: Time Series Analysis, Stochastic Processes, Spatial Statistics, and Simulation Methods.}
+    \resumeItem{Pursuing interdisciplinary training across computer science, mathematics, statistics, and data science.}
+    \resumeItem{Honors College student with advanced preparation for research and technical project work.}
+  \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%------------------------------------------
+% Experience
+%------------------------------------------
+\section{Experience}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {Data Analyst}{May 2026 -- Present}
+  {Sanofi}{Morristown, NJ}
+  \resumeItemListStart
+    \resumeItem{Build a marketing mix modeling pipeline for Wayrilz to estimate channel ROI and marginal response across key marketing tactics.}
+    \resumeItem{Design time-series forecasting pipelines for prescription and sales data using Bayesian and machine learning models.}
+    \resumeItem{Develop an internal tool that connects analysts to Snowflake through an AI-powered chat interface, reducing manual query time.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Lead AI/Math Research (via Worcester Polytechnic Institute)}{May 2025 -- Present}
+  {Collins Aerospace}{Worcester, MA}
+  \resumeItemListStart
+    \resumeItem{Developed a BERT-based LLM to classify aviation safety issues and surface targeted recommendations for effective mitigations.}
+    \resumeItem{Integrated NASA Aviation Safety Reporting System data into the training pipeline, exceeding prior research benchmarks by 22\%.}
+    \resumeItem{Collaborated on applied AI and math research to improve safety modeling and evaluation in aerospace systems.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {AI Researcher and Data Architect}{Jul 2024 -- Jan 2025}
+  {Muni Health}{Remote}
+  \resumeItemListStart
+    \resumeItem{Deployed a LLaMA 3–based AI agent that boosted anomaly detection precision in client health data by 19\%.}
+    \resumeItem{Led a 4-intern team to synthesize 400K+ public health records, increasing chatbot training data diversity by 35\%.}
+    \resumeItem{Contributed to data architecture and pipeline design for health data ingestion and model training.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Data Analyst}{May 2024 -- Aug 2024}
+  {MetroAnalytics}{Remote}
+  \resumeItemListStart
+    \resumeItem{Analyzed data for operational and safety-focused projects, identifying process bottlenecks and improvement opportunities.}
+    \resumeItem{Built or refined analytical deliverables such as workflow maps, visualizations, or stakeholder-facing reports.}
+    \resumeItem{Presented findings and recommendations that supported process improvement and decision-making for clients.}
+  \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%------------------------------------------
+% Research
+%------------------------------------------
+\section{Research}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {Diffusion Models for Energy Systems}{[Dates]}
+  {Research Project}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Studying diffusion-based generative models for applications in energy systems and structured forecasting tasks.}
+    \resumeItem{Exploring how probabilistic generative modeling can capture uncertainty, temporal dependence, and system constraints.}
+    \resumeItem{Implementing experiments and evaluation pipelines for [energy load/grid/demand] forecasting applications.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Theoretical Spatio-temporal Modeling}{2025 -- Present}
+  {Research with Graduate Professor Advisor}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Developing a 1D periodic Gaussian process model for spatio-temporal data with Markovian temporal structure and high-frequency spatial decay.}
+    \resumeItem{Investigating theoretical covariance structure and dependence properties for periodic spatio-temporal processes.}
+    \resumeItem{Studying scalable inference and modeling strategies for structured statistical applications.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Graph-based Markov Failure Models in Mechanical Systems}{Jul 2025 -- Present}
+  {Research with Undergraduate Professor Mentor}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Proposed a graph-based Markov model that classifies component operating states and conditionally updates neighboring failure rates based on state transitions.}
+    \resumeItem{Modeled how local component failures propagate through network structure to capture system-level reliability behavior.}
+    \resumeItem{Analyzed the framework as a flexible approach for predictive maintenance and mechanical system failure modeling.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Directed Research Program Presenter}{May 2024 -- Apr 2025}
+  {Independent Research}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Presented a talk on reproducing kernel Hilbert spaces, their use in nonparametric estimation, and techniques to empirically encode geometric structure in data.}
+    \resumeItem{Connected RKHS methods to statistical learning problems involving flexible function classes and geometry-aware representations.}
+    \resumeItem{Prepared technical exposition for a student research audience through slides, derivations, and applied examples.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Mathematics Large Language Model Research}{Jul 2024 -- Jan 2025}
+  {Research with Undergraduate Professor Mentor}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Designed one-shot-style synthetic logical problem tasks for math-focused LLM training using 1{,}500+ research papers and textbooks.}
+    \resumeItem{Built data generation pipelines for extracting and restructuring mathematical content into model-training examples.}
+    \resumeItem{Explored data-efficient finetuning strategies to improve mathematical reasoning performance in language models.}
+  \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%------------------------------------------
+% Projects
+%------------------------------------------
+\section{Projects}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {RUDegrees.com}{Aug 2024 -- Present}
+  {Full-Stack Degree Planning Platform}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Co-built a full-stack platform using Rutgers Degree Navigator data that optimizes course selection for 550+ students.}
+    \resumeItem{Scraped the full Rutgers Degree Navigator catalog and built a fully connected SQL database of degrees, courses, and prerequisites.}
+    \resumeItem{Developed infrastructure for student-facing degree planning, requirement tracking, and long-term academic optimization.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Proxmox Homelab Large Language Model Service}{Jun 2025 -- Present}
+  {Distributed RAG System}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Self-host an LLM as a private API (currently Qwen2.5-7B-Instruct) backing personal tools including code assistants and RAG services.}
+    \resumeItem{Implemented a RAG pipeline over personal data (calendar, notes, essays) in a vector database for low-latency, private querying.}
+    \resumeItem{Built supporting homelab infrastructure for private model serving, experimentation, and retrieval workflows.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {NFL Wildcard Prediction}{[Dates]}
+  {Independent Project}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Built a predictive modeling pipeline to forecast NFL wildcard outcomes using historical team, player, and game-level data.}
+    \resumeItem{Engineered features from performance statistics, matchup context, and recent team trends to improve predictive signal.}
+    \resumeItem{Evaluated model performance against baselines and analyzed which variables most influenced predictions.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Poker TrueSkill Ranking System}{[Dates]}
+  {Independent / Club Project}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Built a ranking system for poker players using TrueSkill-style probabilistic rating methods to estimate relative skill over repeated games.}
+    \resumeItem{Modeled uncertainty in player strength and updated rankings dynamically as new match results were observed.}
+    \resumeItem{Analyzed ranking stability, player trajectories, and behavior under different game volumes and competitive settings.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Synthetic Time Series Data Generator}{[Dates]}
+  {Independent / Research Project}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Developed a synthetic time series generation pipeline to create realistic sequential data for forecasting, simulation, and model evaluation.}
+    \resumeItem{Designed mechanisms to preserve temporal dependence, distributional structure, and controllable pattern variation across generated samples.}
+    \resumeItem{Used the generator to test downstream models under data-limited settings and compare robustness across forecasting setups.}
+  \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%------------------------------------------
+% Leadership & Activities
+%------------------------------------------
+\section{Leadership \& Activities}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {President}{Sep 2023 -- Present}
+  {Rutgers Data Science Club}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Developed new marketing channels, teaching methods, and industry partnerships, driving a 30\% increase in club member retention.}
+    \resumeItem{Expanded the board and clarified sub-team roles to handle growing workload while delegating responsibilities more efficiently.}
+    \resumeItem{Led workshops, project series, and collaborative programming to strengthen applied data science engagement on campus.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {President}{Apr 2026 -- Present}
+  {Poker Club}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Lead club operations, event planning, and community-building initiatives for students interested in poker and game theory.}
+    \resumeItem{Organize competitive and educational events focused on probability, strategy, and decision-making.}
+    \resumeItem{Promote a culture of strategic thinking, risk management, and responsible play through regular meetings and tournaments.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Road to Quantitative Finance Co-Head}{Mar 2025 -- Present}
+  {Rutgers Quantitative Finance Club}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Designed a program to mentor a cohort of freshmen toward competitive quant internships through targeted advice and directed projects.}
+    \resumeItem{Supported a live intercollegiate trading competition as primary logistics lead and poker prize organizer.}
+    \resumeItem{Helped students build technical, market, and interviewing skills through guided projects and structured mentorship.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {General Assembly Head}{[Dates]}
+  {Model United Nations Club}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Chaired General Assembly sessions, moderating debate and guiding delegates through formal parliamentary procedure.}
+    \resumeItem{Organized training sessions on resolution writing, public speaking, and policy research for new and returning delegates.}
+    \resumeItem{Coordinated logistics for conferences and internal simulations to strengthen preparation and competitive performance.}
+  \resumeItemListEnd
+
+\resumeSubheading
+  {Seva / Service Chair}{[Dates]}
+  {Hindu Student Council}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Planned and coordinated community service and seva initiatives in partnership with local organizations.}
+    \resumeItem{Led outreach efforts to increase student participation in service projects and cultural events.}
+    \resumeItem{Managed event logistics and volunteer coordination to ensure smooth execution of service activities.}
+  \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%------------------------------------------
+% Skills
+%------------------------------------------
+\section{Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{
+    \item{
+      \textbf{Languages}{: Python, R, SQL, C, C++, Java, MATLAB, HTML, CSS, JavaScript, LaTeX} \\
+      \textbf{Libraries/Frameworks}{: PyTorch, TensorFlow, Scikit-learn, Pandas, NumPy, Flask, Hugging Face} \\
+      \textbf{Tools}{: Git, Proxmox, Linux, Jupyter, Docker}
+    }
+  }
+\end{itemize}
+
+\end{document}
