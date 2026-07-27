@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pranav Tikkawar — main.tex</title>
+<meta name="description" content="Pranav Tikkawar — an interactive LaTeX resume you can edit and recompile in the browser.">
+
+<!-- CodeMirror (LaTeX syntax highlighting) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/stex/stex.min.js"></script>
+
+<style>
+  /* ---- Computer Modern (the LaTeX roman) ---- */
+  @font-face{font-family:'CM Serif';font-weight:normal;font-style:normal;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunrm.woff') format('woff');}
+  @font-face{font-family:'CM Serif';font-weight:bold;font-style:normal;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunbx.woff') format('woff');}
+  @font-face{font-family:'CM Serif';font-weight:normal;font-style:italic;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunti.woff') format('woff');}
+  @font-face{font-family:'CM Serif';font-weight:bold;font-style:italic;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunbi.woff') format('woff');}
+
+  :root{
+    --green:#138a07; --green-dark:#0f6d05; --green-line:#3a9c2f;
+    --ink:#2b2b2b;
+    --pdf-bg:#e6e7e9;
+    --mono:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+
+    /* dark chrome: rail / file tree / top bar */
+    --dark-bg:#1b222c; --dark-bg-2:#212a36; --dark-bg-3:#26303d;
+    --dark-border:#323d4c; --dark-text:#c7cdd6; --dark-text-dim:#7c8697; --dark-text-bright:#f2f4f7;
+    --dark-active:#2d3947;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--pdf-bg);overflow:hidden}
+
+  /* ---- top bar (dark, Overleaf-style) ---- */
+  .bar{height:48px;background:var(--dark-bg);color:var(--dark-text-bright);display:flex;align-items:center;
+    gap:10px;padding:0 10px;border-bottom:1px solid #000;position:relative;z-index:6}
+  .tb-left,.tb-right{display:flex;align-items:center;gap:6px;min-width:0}
+  .tb-right{margin-left:auto}
+  .icon-btn{all:unset;cursor:pointer;display:grid;place-items:center;width:30px;height:30px;border-radius:5px;color:var(--dark-text)}
+  .icon-btn:hover{background:var(--dark-active);color:var(--dark-text-bright)}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;white-space:nowrap;padding-right:2px}
+  .brand .logo{width:22px;height:22px;border-radius:4px;background:var(--green);color:#fff;
+    display:grid;place-items:center;font-weight:800;font-size:12px;font-family:Georgia,serif}
+  .crumb{color:var(--dark-text-dim);font-size:13px;white-space:nowrap}
+  .crumb b{color:var(--dark-text-bright);font-weight:600}
+  .tb-btn{all:unset;cursor:pointer;font-size:12.5px;padding:6px 12px;border-radius:5px;color:var(--dark-text);
+    border:1px solid transparent;white-space:nowrap}
+  .tb-btn.ghost{border-color:var(--dark-border)}
+  .tb-btn.ghost:hover{background:var(--dark-active);color:var(--dark-text-bright)}
+  .tb-btn .icn{margin-right:5px;vertical-align:-2px}
+
+  .seg{display:flex;background:var(--dark-bg-3);border-radius:7px;padding:2px;border:1px solid var(--dark-border)}
+  .seg button{all:unset;cursor:pointer;font-size:12.5px;padding:5px 11px;border-radius:5px;
+    color:var(--dark-text);line-height:1}
+  .seg button[aria-pressed="true"]{background:var(--green);color:#fff;font-weight:600}
+
+  .recompile-group{display:flex;align-items:stretch;border-radius:7px;overflow:hidden;position:relative}
+  .recompile{all:unset;cursor:pointer;display:flex;align-items:center;gap:7px;background:var(--green);
+    color:#fff;font-weight:600;font-size:13px;padding:7px 12px}
+  .recompile:hover{background:var(--green-dark)}
+  .recompile:active{transform:translateY(1px)}
+  .recompile .play{width:0;height:0;border-left:8px solid #fff;
+    border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .recompile kbd{font:inherit;font-size:11px;opacity:.75;font-family:var(--mono)}
+  .recompile-caret{all:unset;cursor:pointer;display:grid;place-items:center;width:22px;background:var(--green);
+    color:#fff;border-left:1px solid rgba(255,255,255,.25);font-size:10px}
+  .recompile-caret:hover{background:var(--green-dark)}
+  .recompile-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;color:var(--ink);
+    border:1px solid #d8dade;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);min-width:200px;
+    padding:5px;z-index:20}
+  .recompile-menu button{all:unset;display:block;width:100%;box-sizing:border-box;cursor:pointer;
+    padding:8px 10px;border-radius:5px;font-size:12.5px}
+  .recompile-menu button:hover{background:#f0f4ef}
+  .recompile-menu[hidden]{display:none}
+
+  /* ---- workspace: rail | filetree | editor | divider | preview ---- */
+  .work{height:calc(100% - 48px);display:flex;position:relative}
+
+  .rail{flex:0 0 44px;background:var(--dark-bg);border-right:1px solid var(--dark-border);
+    display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px}
+  .rail-btn{all:unset;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;
+    border-radius:6px;color:var(--dark-text-dim)}
+  .rail-btn:hover{background:var(--dark-active);color:var(--dark-text-bright)}
+  .rail-btn.active{background:var(--dark-active);color:var(--green-line)}
+  .rail-spacer{flex:1}
+
+  .filetree{flex:0 0 210px;background:var(--dark-bg-2);border-right:1px solid var(--dark-border);
+    display:flex;flex-direction:column;overflow-y:auto;color:var(--dark-text);font-size:12.5px}
+  .filetree.collapsed{display:none}
+  .ft-section-label{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:5px;width:100%;
+    cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--dark-text-dim);padding:10px 12px 6px}
+  .ft-tree{list-style:none;margin:0;padding:0 6px 8px}
+  .ft-tree li{border-radius:5px}
+  .ft-file{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;
+    cursor:pointer;overflow:hidden}
+  .ft-file:hover{background:var(--dark-active)}
+  .ft-file.active{background:var(--dark-active);color:var(--dark-text-bright);font-weight:600;
+    box-shadow:inset 2px 0 0 var(--green-line)}
+  .ft-file .icn{opacity:.8;flex:0 0 auto}
+  .ft-file-label{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+  .ft-file-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ft-file-sub{font-size:10px;font-weight:400;color:var(--dark-text-dim);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+
+  .ft-outline{border-top:1px solid var(--dark-border);padding-bottom:8px}
+  .ft-outline-toggle .chev{transition:transform .15s}
+  .ft-outline.open .ft-outline-toggle .chev{transform:rotate(90deg)}
+  .ft-outline-list{list-style:none;margin:0;padding:0 6px;max-height:0;overflow:hidden}
+  .ft-outline.open .ft-outline-list{max-height:260px;overflow-y:auto}
+  .ft-outline-list li{padding:5px 10px;border-radius:5px;cursor:pointer;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis}
+  .ft-outline-list li:hover{background:var(--dark-active);color:var(--dark-text-bright)}
+  .ft-outline-empty{color:var(--dark-text-dim);font-style:italic;padding:5px 10px}
+
+  .pane{height:100%;min-width:0;position:relative}
+  #editor{flex:0 0 44%;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+  #divider{flex:0 0 6px;background:#dcdce0;cursor:col-resize;position:relative}
+  #divider::after{content:"";position:absolute;inset:0 -4px;}
+  #divider:hover{background:var(--green-line)}
+  #preview{flex:1 1 auto;background:var(--pdf-bg);display:flex;flex-direction:column;overflow:hidden}
+
+  .pane-top{height:34px;flex:0 0 34px;background:#f3f3f4;border-bottom:1px solid #dcdce0;
+    display:flex;align-items:center;gap:10px;padding:0 12px;font-size:12px;color:#6a6a70}
+  .pane-top .tag{font-family:var(--mono);font-size:11.5px}
+  .autocompile{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:11.5px;color:#4a7d3f}
+  .dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(19,138,7,.18)}
+  .status{display:flex;align-items:center;gap:6px;font-size:11.5px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#37b24d}
+  .status.busy .dot{background:#f59f00;animation:pulse .7s infinite alternate}
+  .status.err .dot{background:#e03131}
+  @keyframes pulse{to{opacity:.35}}
+
+  .pdf-nav,.zoom{display:flex;align-items:center;gap:4px;font-size:11.5px}
+  .pdf-nav button,.zoom button{all:unset;cursor:pointer;width:20px;height:20px;display:grid;place-items:center;
+    border-radius:4px;color:#555}
+  .pdf-nav button:hover,.zoom button:hover{background:#e2e2e5}
+  .zoom span{min-width:34px;text-align:center;font-variant-numeric:tabular-nums}
+  .dl-btn{all:unset;cursor:pointer;display:flex;align-items:center;gap:5px;font-size:11.5px;
+    padding:4px 9px;border-radius:5px;border:1px solid #cfd2d6;color:#3a3a3e}
+  .dl-btn:hover{background:#e9ebe9;border-color:var(--green-line)}
+
+  .CodeMirror{flex:1 1 auto;height:auto;font-family:var(--mono);font-size:13px;line-height:1.5}
+  .CodeMirror-gutters{background:#f6f7f8;border-right:1px solid #e6e7ea}
+  .CodeMirror-linenumber{color:#9aa0a8}
+  .CodeMirror-cursor{border-left:1.5px solid var(--green)}
+  .CodeMirror-selected{background:#d9f2d4 !important}
+  /* Overleaf-ish light editor palette for stex tokens */
+  .cm-s-default .cm-comment{color:#6b8e5a;font-style:italic}
+  .cm-s-default .cm-tag,.cm-s-default .cm-keyword,.cm-s-default .cm-builtin{color:#5b3fa0;font-weight:600}
+  .cm-s-default .cm-bracket{color:#9099a3}
+  .cm-s-default .cm-atom,.cm-s-default .cm-string,.cm-s-default .cm-string-2{color:#0b7285}
+  .cm-s-default .cm-attribute,.cm-s-default .cm-property{color:#8a4b08}
+  .cm-s-default .cm-variable,.cm-s-default .cm-variable-2,.cm-s-default .cm-def{color:#1a5fb4}
+  .cm-s-default .cm-meta{color:#9099a3}
+  .cm-s-default .cm-error{color:#c00;background:none}
+
+  /* ---- the "pdf" scroll area + page ---- */
+  .pdf-scroll{flex:1 1 auto;overflow:auto;padding:26px 22px 16px}
+  .tex-page{background:#fff;color:#111;max-width:720px;margin:0 auto;padding:44px 54px 52px;
+    box-shadow:0 1px 4px rgba(0,0,0,.16),0 8px 30px rgba(0,0,0,.10);
+    font-family:'CM Serif',Georgia,"Times New Roman",serif;font-size:14.5px;line-height:1.34;
+    border-radius:2px;min-height:60vh;transform-origin:top center;transition:transform .1s ease}
+
+  /* ---- compiled resume elements ---- */
+  .tex-center{text-align:center;margin-bottom:14px}
+  .tex-huge{font-size:2.15em;letter-spacing:.2px}
+  .tex-center a{color:#111;text-decoration:none}
+  .tex-center a:hover{text-decoration:underline}
+  .tex-large{font-size:1.3em}.tex-xl{font-size:1.55em}
+  .tex-small{font-size:.92em}.tex-xsmall{font-size:.8em}
+  .tex-sc{font-variant:small-caps}.tex-bf{font-weight:bold}.tex-it{font-style:italic}
+  .tex-section{font-variant:small-caps;font-size:1.28em;letter-spacing:.4px;
+    border-bottom:1px solid #111;margin:15px 0 5px;padding-bottom:1px}
+  .tex-block{margin-bottom:2px}
+  .tex-heading{margin:7px 0 1px}
+  .tex-hrow{display:flex;justify-content:space-between;gap:16px}
+  .tex-left{text-align:left}.tex-right{text-align:right;white-space:nowrap}
+  ul.tex-items{margin:2px 0 6px;padding-left:22px}
+  ul.tex-items li{margin:1px 0;font-size:.96em}
+  .tex-page a{color:#111}
+  .tex-skills{font-size:.96em;line-height:1.5}
+  .tex-skills strong{font-weight:bold}
+  .tex-p{margin:6px 0;font-size:.97em;line-height:1.42}
+  .tex-section+.tex-p::first-letter{float:left;font-family:'CM Serif',Georgia,serif;
+    font-size:2.6em;line-height:.78;font-weight:bold;padding:2px 6px 0 0}
+
+  /* \includegraphics placeholder frame */
+  .tex-figure{margin:12px auto;text-align:center}
+  .tex-figure-frame{width:140px;height:140px;margin:0 auto;border:2px dashed #c3c6cb;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;color:#a7abb1;background:#fafafa}
+  .tex-figure-caption{margin-top:5px;font-size:.72em;color:#9599a0;font-family:var(--mono)}
+
+  /* error box (compile failure) */
+  .tex-error{max-width:720px;margin:0 auto;background:#fff3f3;border:1px solid #f3b1b1;
+    color:#9b1c1c;font-family:var(--mono);font-size:12.5px;padding:14px 16px;border-radius:6px;white-space:pre-wrap}
+
+  /* ---- logs drawer ---- */
+  .logs-drawer{flex:0 0 auto;border-top:1px solid #cfd2d6;background:#fff;max-height:40%;
+    display:flex;flex-direction:column}
+  .logs-summary{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;
+    width:100%;padding:9px 14px;font-size:12px;color:#1f6b17}
+  .logs-summary .check{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;
+    background:#e5f5e0;color:#1f6b17;flex:0 0 auto}
+  .logs-summary.err .check{background:#fbe1e1;color:#9b1c1c}
+  .logs-summary.err{color:#9b1c1c}
+  .logs-summary .logs-chev{margin-left:auto;transition:transform .15s;color:#8a8f98}
+  .logs-drawer.open .logs-chev{transform:rotate(90deg)}
+  .logs-body{border-top:1px solid #e8e9eb;overflow:auto;padding:10px 14px}
+  .logs-body pre{margin:0;font-family:var(--mono);font-size:11.5px;color:#4a4f57;white-space:pre-wrap}
+
+  /* ---- view modes ---- */
+  .work.view-code #divider,.work.view-code #preview{display:none}
+  .work.view-code #editor{flex:1 1 100%}
+  .work.view-pdf #divider,.work.view-pdf #editor{display:none}
+  .work.view-pdf #preview{flex:1 1 100%}
+
+  @media(max-width:1000px){
+    .rail,.filetree{display:none}
+  }
+  @media(max-width:820px){
+    .crumb,.tb-btn.ghost,.recompile kbd{display:none}
+    .seg .split-btn{display:none}
+    #editor{flex-basis:100% !important}
+    .work.view-split #editor{display:none}
+    .work.view-split #divider{display:none}
+    .work.view-split #preview{flex:1 1 100%}
+    .tex-page{padding:30px 26px}
+    .autocompile{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none !important}}
+
+  /* ---- print (Download PDF) ---- */
+  @media print{
+    body *{visibility:hidden}
+    .pdf-scroll,.pdf-scroll *{visibility:visible}
+    .pdf-scroll{position:absolute;left:0;top:0;width:100%;padding:0;overflow:visible}
+    .tex-page{box-shadow:none;transform:none !important;max-width:100%;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="tb-left">
+    <button class="icon-btn" id="menuBtn" title="Menu">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="brand"><span class="logo">P</span>Pranav&nbsp;Tikkawar</span>
+    <span class="crumb">/ <b id="crumbFile">main.tex</b></span>
+  </div>
+  <div class="tb-right">
+    <button class="tb-btn ghost" title="History">
+      <svg class="icn" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>History
+    </button>
+    <button class="tb-btn ghost" title="Share this resume">Share</button>
+    <button class="tb-btn ghost" title="Submit">Submit</button>
+    <div class="seg" role="group" aria-label="Layout">
+      <button data-view="code" aria-pressed="false">Code</button>
+      <button class="split-btn" data-view="split" aria-pressed="true">Split</button>
+      <button data-view="pdf" aria-pressed="false">PDF</button>
+    </div>
+    <div class="recompile-group">
+      <button class="recompile" id="recompile" title="Recompile (Ctrl/Cmd+Enter)">
+        <span class="play"></span>Recompile <kbd>⌘↵</kbd>
+      </button>
+      <button class="recompile-caret" id="recompileCaret" aria-label="Recompile options">▾</button>
+      <div class="recompile-menu" id="recompileMenu" hidden>
+        <button data-action="recompile">Recompile</button>
+        <button data-action="clean">Stop compilation &amp; clean up</button>
+      </div>
+    </div>
+    <button class="icon-btn" id="logsToggleTop" title="View logs">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="work view-split" id="work">
+
+  <div class="rail" id="rail">
+    <button class="rail-btn active" data-panel="files" title="File tree">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"/></svg>
+    </button>
+    <button class="rail-btn" title="Search">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="rail-btn" title="Integrations">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    </button>
+    <button class="rail-btn" title="Review">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+    <button class="rail-btn" title="Chat">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.4 8.4H12a8.3 8.3 0 01-4-1L3 20l1.2-3.6a8.3 8.3 0 01-1-4A8.4 8.4 0 0111.6 3H12a8.4 8.4 0 019 8.5z"/></svg>
+    </button>
+    <div class="rail-spacer"></div>
+    <button class="rail-btn" title="Help">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2-3 4"/><line x1="12" y1="17.2" x2="12" y2="17.2"/></svg>
+    </button>
+    <button class="rail-btn" title="Settings">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    </button>
+  </div>
+
+  <div class="filetree" id="filetree">
+    <div class="ft-section-label" style="cursor:default">Files</div>
+    <ul class="ft-tree">
+      <li class="ft-file active" data-file="main.tex" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">main.tex</span><span class="ft-file-sub">start here</span></span>
+      </li>
+      <li class="ft-file" data-file="about_me.tex" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">about_me.tex</span><span class="ft-file-sub">the person, not just the résumé</span></span>
+      </li>
+      <li class="ft-file" data-file="cv.tex" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">cv.tex</span><span class="ft-file-sub">the traditional format</span></span>
+      </li>
+      <li class="ft-file" style="opacity:.55;cursor:default" tabindex="0">
+        <svg class="icn" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span class="ft-file-label"><span class="ft-file-name">references.bib</span></span>
+      </li>
+    </ul>
+    <div class="ft-outline open" id="outlineSection">
+      <button class="ft-section-label ft-outline-toggle" id="outlineToggle">
+        <svg class="chev" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>Outline
+      </button>
+      <ul class="ft-outline-list" id="outlineList"></ul>
+    </div>
+  </div>
+
+  <div class="pane" id="editor">
+    <div class="pane-top">
+      <span class="tag" id="editorTag">main.tex</span>
+      <span class="autocompile" id="autocompile"><span class="dot-live"></span>Auto Compile: On</span>
+    </div>
+    <textarea id="src"></textarea>
+  </div>
+  <div class="pane" id="divider" title="Drag to resize"></div>
+  <div class="pane" id="preview">
+    <div class="pane-top">
+      <span class="tag" id="pdfTag">main.pdf</span>
+      <div class="pdf-nav">
+        <button id="pgPrev" aria-label="Previous page">‹</button><span>1 / 1</span><button id="pgNext" aria-label="Next page">›</button>
+      </div>
+      <div class="zoom">
+        <button id="zoomOut" aria-label="Zoom out">−</button><span id="zoomPct">100%</span><button id="zoomIn" aria-label="Zoom in">+</button>
+      </div>
+      <button class="dl-btn" id="downloadPdf" title="Print / save this resume as a PDF">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 21h16"/></svg>Download PDF
+      </button>
+      <span class="status" id="status"><span class="dot"></span><span id="status-txt">Compiled</span></span>
+    </div>
+    <div class="pdf-scroll"><div class="tex-page" id="page"></div></div>
+    <div class="logs-drawer" id="logsDrawer">
+      <button class="logs-summary" id="logsSummary">
+        <span class="check" id="logsIcon">
+          <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <span id="logsHeadline">This project compiled successfully</span>&nbsp;·&nbsp;<span id="logsCount">0 errors, 0 warnings</span>
+        <svg class="logs-chev" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="logs-body" id="logsBody" hidden><pre id="logsText"></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- three documents, kept raw so entities aren't decoded -->
+<script type="text/plain" id="seed-main">
+%-------------------------
+% Pranav Tikkawar — main.tex
+% This is the landing page of the site. Edit anything on the left, then hit Recompile.
+%-------------------------
+\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\huge \textbf{Pranav Tikkawar}} \\
+    \vspace{4pt}
+    {\large New Brunswick, NJ}
+\end{center}
+
+\section{Welcome}
+This whole site is one interactive document, not a screenshot of one. The pane on the
+left is a real editor; the pane on the right is a small LaTeX interpreter, written from
+scratch, running in your browser and recompiling as you type. Break something in the
+source and it will tell you exactly that, in the log drawer below the page, instead of
+quietly failing.
+
+There are two other documents open in this project, both a click away in the file tree.
+\textbf{about\_me.tex} is the version of me that doesn't fit inside a resume --- what I
+care about outside of work, and what I'm currently building or reading. \textbf{cv.tex}
+is the traditional format: education, experience, projects, and how to reach me.
+
+Start wherever you'd naturally start with a person: read a little, then look at what
+they've actually done.
+\end{document}
+</script>
+
+<script type="text/plain" id="seed-about">
+%-------------------------
+% Pranav Tikkawar — about_me.tex
+% Fill in the bracketed placeholders below, then hit Recompile.
+%-------------------------
+\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\huge \textbf{About Me}} \\
+    \vspace{6pt}
+    \includegraphics[width=0.32\linewidth]{photos/headshot.jpg}
+\end{center}
+
+\section{About Me}
+[Write 2--3 sentences about your background, what drives you, and what you're working
+toward. This is the one place on the site that isn't a bullet list --- write it like
+you're talking to someone.]
+
+\section{Interests}
+\resumeItemListStart
+  \resumeItem{[Hobby or interest #1 --- what it is and why you like it.]}
+  \resumeItem{[Hobby or interest #2.]}
+  \resumeItem{[Hobby or interest #3.]}
+\resumeItemListEnd
+
+\section{Currently}
+\resumeItemListStart
+  \resumeItem{\textbf{Learning:} [what you're picking up right now]}
+  \resumeItem{\textbf{Reading:} [book / paper / blog]}
+  \resumeItem{\textbf{Building:} [side project]}
+\resumeItemListEnd
+
+For the same story told as a traditional CV --- education, experience, projects --- open
+cv.tex.
+
+% Swap the \includegraphics path above for a real, hosted photo whenever you have one.
+\end{document}
+</script>
+
+<script type="text/plain" id="seed-cv">
+%-------------------------
+% Pranav Tikkawar — cv.tex
+% Edit anything on the left, then hit Recompile.
+%-------------------------
+\documentclass[letterpaper,10pt]{article}
+\begin{document}
+\begin{center}
+    {\huge \textbf{Pranav Tikkawar}} \\
+    \vspace{2pt}
+    New Brunswick, NJ \\
+    \vspace{1pt}
+    \href{tel:1-732-266-4858}{732-266-4858} $|$
+    \href{mailto:pt422@scarletmail.rutgers.edu}{pt422@scarletmail.rutgers.edu} $|$
+    \href{https://www.linkedin.com/in/pranav-tikkawar/}{linkedin.com/in/pranav-tikkawar} $|$
+    \href{https://github.com/Shadowknight9284}{github.com/Shadowknight9284}
+\end{center}
+
+\section{Education}
+\resumeSubHeadingListStart
+\resumeSubheading
+  {Rutgers, The State University of New Jersey, Honors College}{New Brunswick, NJ}
+  {B.S. in Computer Science, Mathematics, Data Science, and Statistics; GPA: 3.84/4.00}{May 2027}
+  \resumeItemListStart
+    \resumeItem{Graduate coursework: Time Series Analysis, Stochastic Processes, Spatial Statistics, and Simulation Methods.}
+    \resumeItem{Interdisciplinary training across computer science, mathematics, statistics, and data science.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Experience}
+\resumeSubHeadingListStart
+\resumeSubheading
+  {Data Analyst}{May 2026 -- Present}
+  {Sanofi}{Morristown, NJ}
+  \resumeItemListStart
+    \resumeItem{Build a marketing mix modeling pipeline for Wayrilz to estimate channel ROI and marginal response.}
+    \resumeItem{Design time-series forecasting pipelines for prescription and sales data using Bayesian and ML models.}
+    \resumeItem{Develop an internal tool connecting analysts to Snowflake through an AI-powered chat interface.}
+  \resumeItemListEnd
+\resumeSubheading
+  {Lead AI/Math Research (via WPI)}{May 2025 -- Present}
+  {Collins Aerospace}{Worcester, MA}
+  \resumeItemListStart
+    \resumeItem{Developed a BERT-based LLM to classify aviation safety issues and surface targeted mitigations.}
+    \resumeItem{Integrated NASA Aviation Safety Reporting System data, exceeding prior research benchmarks by 22\%.}
+  \resumeItemListEnd
+\resumeSubheading
+  {AI Researcher and Data Architect}{Jul 2024 -- Jan 2025}
+  {Muni Health}{Remote}
+  \resumeItemListStart
+    \resumeItem{Deployed a LLaMA 3 based AI agent that boosted anomaly detection precision in health data by 19\%.}
+    \resumeItem{Led a 4-intern team to synthesize 400K+ public health records, growing training-data diversity by 35\%.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Projects}
+\resumeSubHeadingListStart
+\resumeSubheading
+  {RUDegrees.com}{Aug 2024 -- Present}
+  {Full-Stack Degree Planning Platform}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Co-built a full-stack platform on Rutgers Degree Navigator data that optimizes course selection for 550+ students.}
+    \resumeItem{Scraped the full catalog into a connected SQL database of degrees, courses, and prerequisites.}
+  \resumeItemListEnd
+\resumeSubheading
+  {Proxmox Homelab LLM Service}{Jun 2025 -- Present}
+  {Distributed RAG System}{New Brunswick, NJ}
+  \resumeItemListStart
+    \resumeItem{Self-host an LLM as a private API (Qwen2.5-7B-Instruct) backing code assistants and RAG services.}
+    \resumeItem{Built a RAG pipeline over personal data in a vector database for low-latency private querying.}
+  \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+% --- Add proof-of-work links like this as you finish projects: ---
+% \resumeSubheading
+%   {\href{https://github.com/Shadowknight9284/your-repo}{Project Name}}{2026}
+%   {What it is}{Stack}
+
+\section{Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{
+    \item{
+      \textbf{Languages}{: Python, R, SQL, C, C++, Java, MATLAB, HTML, CSS, JavaScript, LaTeX} \\
+      \textbf{Libraries/Frameworks}{: PyTorch, TensorFlow, Scikit-learn, Pandas, NumPy, Flask, Hugging Face} \\
+      \textbf{Tools}{: Git, Proxmox, Linux, Jupyter, Docker}
+    }
+  }
+\end{itemize}
+\end{document}
+</script>
+
+<script>
+/* ================= LaTeX resume compiler (browser copy) ================= */
+var ResumeTeX = (function () {
+  "use strict";
+  function escChar(c){return c==="&"?"&amp;":c==="<"?"&lt;":c===">"?"&gt;":c;}
+  function escText(s){return s.replace(/[&<>]/g,escChar);}
+  function readGroup(s,i){var d=0,st=i;for(;i<s.length;i++){var c=s[i];
+    if(c==="\\"){i++;continue;}if(c==="{")d++;else if(c==="}"){d--;
+    if(d===0)return{content:s.slice(st+1,i),next:i+1};}}return{content:s.slice(st+1),next:s.length};}
+  function skipWs(s,i){while(i<s.length&&/\s/.test(s[i]))i++;return i;}
+  function skipOptional(s,i){var j=skipWs(s,i);if(s[j]==="["){var d=0;for(;j<s.length;j++){
+    if(s[j]==="[")d++;else if(s[j]==="]"){d--;if(d===0)return j+1;}}}return i;}
+  function readArgs(s,i,n){var a=[];for(var k=0;k<n;k++){i=skipWs(s,i);
+    if(s[i]==="{"){var g=readGroup(s,i);a.push(g.content);i=g.next;}else a.push("");}return{args:a,next:i};}
+  var SW={huge:"tex-huge",Huge:"tex-huge",LARGE:"tex-xl",Large:"tex-large",large:"tex-large",
+    normalsize:"",small:"tex-small",footnotesize:"tex-small",scriptsize:"tex-xsmall",tiny:"tex-xsmall",
+    scshape:"tex-sc",bfseries:"tex-bf",itshape:"tex-it",it:"tex-it",bf:"tex-bf",sc:"tex-sc"};
+  var WRAP={textbf:"strong",textit:"em",emph:"em",underline:"u",texttt:"code",textsc:"span"};
+  function unescapeUrl(u){return u.replace(/\\([%&#_${}])/g,"$1");}
+  function figureHtml(path){return '<div class="tex-figure"><div class="tex-figure-frame">'+
+    '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6">'+
+    '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/>'+
+    '<path d="M21 15l-5-4-4 3-3-2-6 5"/></svg></div>'+
+    '<div class="tex-figure-caption">'+escText(path)+'</div></div>';}
+  function renderMath(x){return x.replace(/\\bullet/g,"•").replace(/\\cdot/g,"·")
+    .replace(/\\times/g,"×").replace(/\\%/g,"%").replace(/[{}]/g,"")
+    .replace(/\\[a-zA-Z]+/g,"").replace(/[&<>]/g,escChar);}
+  function inline(s){var out="",i=0;while(i<s.length){var c=s[i];
+    if(c==="\\"){var n1=s[i+1];
+      if(n1==="\\"){out+="<br>";i=skipOptional(s,i+2);continue;}
+      if(n1&&"&%$#_{}".indexOf(n1)>=0){out+=escChar(n1);i+=2;continue;}
+      if(n1===" "||n1===","){out+=" ";i+=2;continue;}
+      var m=/^[a-zA-Z]+/.exec(s.slice(i+1));if(!m){i+=2;continue;}
+      var name=m[0],j=i+1+name.length;
+      if(name==="href"){var a=readArgs(s,j,2);
+        out+='<a href="'+escText(unescapeUrl(a.args[0].trim()))+'" target="_blank" rel="noopener">'+inline(a.args[1])+"</a>";i=a.next;continue;}
+      if(name==="url"){var u=readArgs(s,j,1),uu=escText(unescapeUrl(u.args[0].trim()));
+        out+='<a href="'+uu+'" target="_blank" rel="noopener">'+uu+"</a>";i=u.next;continue;}
+      if(name==="includegraphics"){var jj=skipOptional(s,j),ig=readArgs(s,jj,1);
+        out+=figureHtml(ig.args[0].trim());i=ig.next;continue;}
+      if(WRAP.hasOwnProperty(name)){var g=readArgs(s,j,1),tag=WRAP[name],cl=name==="textsc"?' class="tex-sc"':"";
+        out+="<"+tag+cl+">"+inline(g.args[0])+"</"+tag+">";i=g.next;continue;}
+      if(name==="item"){i=j;out+=out&&!/(?:<br>|>)\s*$/.test(out)?" ":"";continue;}
+      if(SW.hasOwnProperty(name)){var rest=s.slice(j),c2=SW[name];
+        return out+(c2?'<span class="'+c2+'">'+inline(rest)+"</span>":inline(rest));}
+      if(name==="vspace"||name==="hspace"||name==="hfill"){
+        if(s[j]==="{"){var vg=readGroup(s,j);i=vg.next;}else i=j;continue;}
+      i=j;continue;}
+    if(c==="{"){var bg=readGroup(s,i);out+=inline(bg.content);i=bg.next;continue;}
+    if(c==="}"){i++;continue;}
+    if(c==="$"){var e=s.indexOf("$",i+1);if(e<0)e=s.length;out+=renderMath(s.slice(i+1,e));i=e+1;continue;}
+    if(c==="~"){out+=" ";i++;continue;}
+    if(s.startsWith("---",i)){out+="—";i+=3;continue;}
+    if(s.startsWith("--",i)){out+="–";i+=2;continue;}
+    out+=escChar(c);i++;}return out;}
+  function stripComments(s){return s.replace(/(^|[^\\])%.*$/gm,"$1").replace(/^%.*$/gm,"");}
+  function extractBody(src){var b=src.indexOf("\\begin{document}"),e=src.indexOf("\\end{document}");
+    if(b<0)b=-16;if(e<0)e=src.length;return src.slice(b+16,e);}
+  function twoRow(a){return '<div class="tex-heading"><div class="tex-hrow"><span class="tex-left"><strong>'+
+    inline(a[0])+'</strong></span><span class="tex-right">'+inline(a[1])+'</span></div>'+
+    '<div class="tex-hrow"><span class="tex-left"><em>'+inline(a[2])+'</em></span>'+
+    '<span class="tex-right"><em>'+inline(a[3])+'</em></span></div></div>';}
+  function compile(src){var body=stripComments(extractBody(src)),out="",i=0,n=body.length;
+    while(i<n){if(/\s/.test(body[i])){i++;continue;}
+      if(body[i]==="\\"){var m=/^[a-zA-Z]+\*?/.exec(body.slice(i+1));if(!m){i+=2;continue;}
+        var name=m[0],j=i+1+name.length;
+        switch(name){
+          case "section":{var g=readArgs(body,j,1);out+='<div class="tex-section">'+inline(g.args[0])+"</div>";i=g.next;continue;}
+          case "begin":{var eg=readArgs(body,j,1),env=eg.args[0].trim(),k=skipOptional(body,eg.next),
+            et="\\end{"+env+"}",ei=body.indexOf(et,k);if(ei<0)ei=n;var inner=body.slice(k,ei);
+            if(env==="center")out+='<div class="tex-center">'+inline(inner)+"</div>";
+            else if(env==="itemize"||env==="enumerate")out+='<div class="tex-skills">'+inline(inner)+"</div>";
+            else out+=inline(inner);i=ei+et.length;continue;}
+          case "resumeSubHeadingListStart":out+='<div class="tex-block">';i=j;continue;
+          case "resumeSubHeadingListEnd":out+="</div>";i=j;continue;
+          case "resumeItemListStart":out+='<ul class="tex-items">';i=j;continue;
+          case "resumeItemListEnd":out+="</ul>";i=j;continue;
+          case "resumeSubheading":{var s4=readArgs(body,j,4);out+=twoRow(s4.args);i=s4.next;continue;}
+          case "resumeSubSubheading":{var s2=readArgs(body,j,2);out+='<div class="tex-heading"><div class="tex-hrow">'+
+            '<span class="tex-left"><em>'+inline(s2.args[0])+'</em></span><span class="tex-right"><em>'+
+            inline(s2.args[1])+'</em></span></div></div>';i=s2.next;continue;}
+          case "resumeProjectHeading":{var p2=readArgs(body,j,2);out+='<div class="tex-heading"><div class="tex-hrow">'+
+            '<span class="tex-left">'+inline(p2.args[0])+'</span><span class="tex-right">'+inline(p2.args[1])+
+            '</span></div></div>';i=p2.next;continue;}
+          case "resumeItem":case "resumeSubItem":{var it=readArgs(body,j,1);out+="<li>"+inline(it.args[0])+"</li>";i=it.next;continue;}
+          case "includegraphics":{var jj=skipOptional(body,j),ig=readArgs(body,jj,1);
+            out+=figureHtml(ig.args[0].trim());i=ig.next;continue;}
+          case "vspace":case "hspace":{var w=skipWs(body,j);if(body[w]==="{"){var vg=readGroup(body,w);i=vg.next;}else i=j;continue;}
+          case "end":{var ce=readArgs(body,j,1);i=ce.next;continue;}
+          default:i=j;continue;}}
+      var pstart=i;
+      while(i<n&&body[i]!=="\\"){i++;}
+      var paras=body.slice(pstart,i).split(/\n[ \t]*\n/);
+      for(var pi=0;pi<paras.length;pi++){var ptext=paras[pi].trim();
+        if(ptext)out+='<p class="tex-p">'+inline(ptext)+"</p>";}
+      continue;}
+    return out;}
+  return {compile:compile};
+})();
+
+/* ================= wiring ================= */
+(function(){
+  function seedText(id){ return document.getElementById(id).textContent.replace(/^\s*\n/,""); }
+  var docs = {
+    "main.tex": seedText("seed-main"),
+    "about_me.tex": seedText("seed-about"),
+    "cv.tex": seedText("seed-cv")
+  };
+  var activeFile = "main.tex";
+  var ta = document.getElementById("src");
+  ta.value = docs[activeFile];
+  var page = document.getElementById("page");
+  var status = document.getElementById("status");
+  var statusTxt = document.getElementById("status-txt");
+  var work = document.getElementById("work");
+  var rail = document.getElementById("rail");
+  var filetree = document.getElementById("filetree");
+  var editorTag = document.getElementById("editorTag");
+  var pdfTag = document.getElementById("pdfTag");
+  var crumbFile = document.getElementById("crumbFile");
+  var outlineList = document.getElementById("outlineList");
+  var logsDrawer = document.getElementById("logsDrawer");
+  var logsSummary = document.getElementById("logsSummary");
+  var logsBody = document.getElementById("logsBody");
+  var logsText = document.getElementById("logsText");
+  var logsIcon = document.getElementById("logsIcon");
+  var logsHeadline = document.getElementById("logsHeadline");
+  var logsCount = document.getElementById("logsCount");
+  var cm = null;
+
+  function CM(){ return cm || { getValue:function(){return ta.value;} }; }
+  function setActiveValue(v){ if(cm) cm.setValue(v); else ta.value=v; }
+
+  /* ---- multi-file switching ---- */
+  function switchFile(name){
+    if(name===activeFile || !docs.hasOwnProperty(name)) return;
+    docs[activeFile] = CM().getValue();
+    activeFile = name;
+    setActiveValue(docs[name]);
+    editorTag.textContent = name;
+    pdfTag.textContent = name.replace(/\.tex$/, ".pdf");
+    crumbFile.textContent = name;
+    document.querySelectorAll(".ft-file[data-file]").forEach(function(el){
+      el.classList.toggle("active", el.dataset.file===name);
+    });
+    doCompile(true);
+  }
+
+  /* ---- outline: derive \section{...} titles from raw source ---- */
+  function extractOutline(src){
+    var re=/\\section\{([^}]*)\}/g, out=[], m;
+    while((m=re.exec(src))){
+      var line = src.slice(0,m.index).split("\n").length - 1;
+      out.push({title:m[1].replace(/\\[a-zA-Z]+/g,"").replace(/[{}]/g,"").trim(), line:line});
+    }
+    return out;
+  }
+  function renderOutline(src){
+    var items = extractOutline(src);
+    outlineList.innerHTML = "";
+    if(!items.length){
+      var li = document.createElement("li");
+      li.className = "ft-outline-empty";
+      li.textContent = "No sections found";
+      outlineList.appendChild(li);
+      return;
+    }
+    items.forEach(function(item, idx){
+      var li = document.createElement("li");
+      li.textContent = item.title || "(untitled section)";
+      li.addEventListener("click", function(){
+        if(cm){ cm.setCursor({line:item.line, ch:0}); cm.scrollIntoView({line:item.line, ch:0}, 80); cm.focus(); }
+        var secs = page.querySelectorAll(".tex-section");
+        if(secs[idx]) secs[idx].scrollIntoView({behavior:"smooth", block:"start"});
+      });
+      outlineList.appendChild(li);
+    });
+  }
+
+  /* ---- logs drawer ---- */
+  function setLogsSuccess(){
+    logsSummary.classList.remove("err");
+    logsIcon.innerHTML = '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
+    logsHeadline.textContent = "This project compiled successfully";
+    logsCount.textContent = "0 errors, 0 warnings";
+    logsText.textContent = "Compiling "+activeFile+"...\nRendering to "+activeFile.replace(/\.tex$/,".pdf")+"...\nOutput written.\nDone.";
+  }
+  function setLogsError(message){
+    logsSummary.classList.add("err");
+    logsIcon.innerHTML = '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    logsHeadline.textContent = "This project failed to compile";
+    logsCount.textContent = "1 error, 0 warnings";
+    logsText.textContent = "! LaTeX Error.\n" + message;
+    logsDrawer.classList.add("open");
+    logsBody.hidden = false;
+  }
+
+  /* ---- compile ---- */
+  function doCompile(showBusy){
+    var run = function(){
+      var src = CM().getValue();
+      try{
+        page.innerHTML = ResumeTeX.compile(src);
+        statusTxt.textContent = "Compiled · 0 errors";
+        status.classList.remove("err");
+        setLogsSuccess();
+      }catch(err){
+        var msg = String(err && err.message || err);
+        page.innerHTML = '<div class="tex-error">Compile error:\n'+msg+'</div>';
+        statusTxt.textContent = "1 error";
+        status.classList.add("err");
+        setLogsError(msg);
+      }
+      renderOutline(src);
+      status.classList.remove("busy");
+    };
+    if(showBusy){
+      status.classList.add("busy");
+      statusTxt.textContent = "Compiling…";
+      setTimeout(run, 260);
+    } else run();
+  }
+
+  var t;
+  function schedule(){ clearTimeout(t); t = setTimeout(function(){doCompile(false);}, 450); }
+
+  function boot(){
+    if(window.CodeMirror){
+      cm = CodeMirror.fromTextArea(ta,{
+        mode:"stex", lineNumbers:true, lineWrapping:true, viewportMargin:Infinity
+      });
+      cm.on("change", schedule);
+      cm.setOption("extraKeys",{
+        "Cmd-Enter":function(){doCompile(true);}, "Ctrl-Enter":function(){doCompile(true);},
+        "Cmd-S":function(){doCompile(true);}, "Ctrl-S":function(){doCompile(true);}
+      });
+    }else{
+      ta.style.cssText="flex:1;width:100%;border:0;padding:12px;font-family:var(--mono);font-size:13px;resize:none";
+      ta.addEventListener("input", schedule);
+    }
+    doCompile(false);
+  }
+  // CodeMirror scripts are deferred; wait for load
+  if(window.CodeMirror) boot();
+  else window.addEventListener("load", boot);
+
+  // recompile button + dropdown
+  document.getElementById("recompile").addEventListener("click",function(){doCompile(true);});
+  var caret = document.getElementById("recompileCaret");
+  var menu = document.getElementById("recompileMenu");
+  caret.addEventListener("click",function(e){
+    e.stopPropagation();
+    menu.hidden = !menu.hidden;
+  });
+  menu.addEventListener("click",function(e){
+    var b = e.target.closest("button"); if(!b) return;
+    menu.hidden = true;
+    doCompile(true);
+  });
+  document.addEventListener("click",function(e){
+    if(!menu.hidden && !menu.contains(e.target) && e.target!==caret) menu.hidden = true;
+  });
+
+  // top-bar logs shortcut opens the drawer
+  document.getElementById("logsToggleTop").addEventListener("click",function(){
+    logsDrawer.classList.toggle("open");
+    logsBody.hidden = !logsDrawer.classList.contains("open");
+  });
+  logsSummary.addEventListener("click",function(){
+    logsDrawer.classList.toggle("open");
+    logsBody.hidden = !logsDrawer.classList.contains("open");
+  });
+
+  // block browser save on Ctrl/Cmd+S globally too
+  document.addEventListener("keydown",function(e){
+    if((e.metaKey||e.ctrlKey)&&(e.key==="s"||e.key==="Enter")){e.preventDefault();doCompile(true);}
+  });
+
+  // view segmented control
+  var segBtns = document.querySelectorAll(".seg button");
+  segBtns.forEach(function(b){
+    b.addEventListener("click",function(){
+      var v=b.dataset.view;
+      work.className="work view-"+v;
+      segBtns.forEach(function(x){x.setAttribute("aria-pressed", x===b?"true":"false");});
+      if(cm) setTimeout(function(){cm.refresh();},30);
+    });
+  });
+
+  // draggable divider (accounts for the rail + file-tree width when visible)
+  var dv=document.getElementById("divider"), ed=document.getElementById("editor"), dragging=false;
+  dv.addEventListener("mousedown",function(e){dragging=true;e.preventDefault();document.body.style.cursor="col-resize";});
+  window.addEventListener("mousemove",function(e){
+    if(!dragging)return;
+    var r=work.getBoundingClientRect();
+    var offset=(rail.offsetParent?rail.getBoundingClientRect().width:0)+(filetree.offsetParent?filetree.getBoundingClientRect().width:0);
+    var start=r.left+offset, avail=r.width-offset;
+    var pct=(e.clientX-start)/avail*100;
+    pct=Math.max(22,Math.min(78,pct)); ed.style.flexBasis=pct+"%";
+  });
+  window.addEventListener("mouseup",function(){if(dragging){dragging=false;document.body.style.cursor="";if(cm)cm.refresh();}});
+
+  // icon rail: only "File tree" toggles a real panel
+  var railBtns = document.querySelectorAll(".rail-btn");
+  railBtns.forEach(function(b){
+    b.addEventListener("click",function(){
+      if(b.dataset.panel!=="files") return;
+      railBtns.forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      filetree.classList.toggle("collapsed");
+    });
+  });
+
+  // file tree: click (or Enter) a file to switch the editor + preview to it
+  document.querySelectorAll(".ft-file[data-file]").forEach(function(el){
+    el.addEventListener("click",function(){ switchFile(el.dataset.file); });
+    el.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); switchFile(el.dataset.file); }
+    });
+  });
+
+  // outline drawer expand-collapse
+  document.getElementById("outlineToggle").addEventListener("click",function(){
+    document.getElementById("outlineSection").classList.toggle("open");
+  });
+
+  // zoom controls
+  var zoom = 100;
+  var zoomPct = document.getElementById("zoomPct");
+  function applyZoom(){ page.style.transform = "scale("+(zoom/100)+")"; zoomPct.textContent = zoom+"%"; }
+  document.getElementById("zoomIn").addEventListener("click",function(){ zoom=Math.min(200,zoom+10); applyZoom(); });
+  document.getElementById("zoomOut").addEventListener("click",function(){ zoom=Math.max(50,zoom-10); applyZoom(); });
+
+  // page nav is decorative (single-page resume, always 1 / 1)
+  document.getElementById("pgPrev").addEventListener("click",function(){});
+  document.getElementById("pgNext").addEventListener("click",function(){});
+
+  // download: print just the rendered page
+  document.getElementById("downloadPdf").addEventListener("click",function(){ window.print(); });
+
+  // default view on small screens
+  if(matchMedia("(max-width:820px)").matches){ work.className="work view-pdf";
+    segBtns.forEach(function(x){x.setAttribute("aria-pressed", x.dataset.view==="pdf"?"true":"false");}); }
+})();
+</script>
+</body>
+</html>
