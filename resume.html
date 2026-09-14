@@ -410,39 +410,51 @@ they've actually done.
 <script type="text/plain" id="seed-about">
 %-------------------------
 % Pranav Tikkawar — about_me.tex
-% Fill in the bracketed placeholders below, then hit Recompile.
+% Edit anything on the left, then hit Recompile.
 %-------------------------
 \documentclass[letterpaper,10pt]{article}
 \begin{document}
 \begin{center}
     {\huge \textbf{About Me}} \\
     \vspace{6pt}
-    \includegraphics[width=0.32\linewidth]{photos/headshot.jpg}
+    \includegraphics[width=0.32\linewidth]{headshot.jpg}
 \end{center}
 
 \section{About Me}
-[Write 2--3 sentences about your background, what drives you, and what you're working
-toward. This is the one place on the site that isn't a bullet list --- write it like
-you're talking to someone.]
+I'm an undergraduate at Rutgers studying computer science, mathematics, data science, and
+statistics --- four majors that are really one interest: taking a noisy real-world signal
+and finding the structure underneath it.
+
+Most of what I've built started as an annoyance. RUDegrees exists because planning a
+Rutgers degree by hand is miserable. The homelab exists because I wanted a language model
+I could point at my own data without handing it to somebody else's API. The work I care
+about is the kind where the statistics are honest and somebody actually uses the result.
 
 \section{Interests}
 \resumeItemListStart
-  \resumeItem{[Hobby or interest #1 --- what it is and why you like it.]}
-  \resumeItem{[Hobby or interest #2.]}
-  \resumeItem{[Hobby or interest #3.]}
+  \resumeItem{\textbf{Self-hosting.} I run a Proxmox cluster at home serving a private LLM
+    and a RAG pipeline over my own documents. Owning the whole stack is the fastest way
+    I've found to learn how it actually works.}
+  \resumeItem{\textbf{Probability and stochastic processes.} The graduate sequence ---
+    time series, spatial statistics, simulation --- is the part of my coursework I'd take
+    again for fun. Randomness is more structured than it looks.}
+  \resumeItem{\textbf{Tools people actually use.} A model in a notebook isn't finished. I
+    like the unglamorous part: scraping the catalog, shaping the schema, making it fast
+    enough that 550 students keep coming back.}
 \resumeItemListEnd
 
 \section{Currently}
 \resumeItemListStart
-  \resumeItem{\textbf{Learning:} [what you're picking up right now]}
-  \resumeItem{\textbf{Reading:} [book / paper / blog]}
-  \resumeItem{\textbf{Building:} [side project]}
+  \resumeItem{\textbf{Learning:} Bayesian approaches to marketing mix modeling --- priors
+    that encode what the business already knows, without letting them do all the work.}
+  \resumeItem{\textbf{Reading:} \textit{Bayesian Data Analysis} (Gelman et al.), slowly
+    and with a notebook open.}
+  \resumeItem{\textbf{Building:} Extending the homelab RAG service so the retrieval layer
+    is good enough to trust without re-reading the source every time.}
 \resumeItemListEnd
 
 For the same story told as a traditional CV --- education, experience, projects --- open
 cv.tex.
-
-% Swap the \includegraphics path above for a real, hosted photo whenever you have one.
 \end{document}
 </script>
 
