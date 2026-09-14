@@ -22,11 +22,25 @@
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
-    display:flex;align-items:center;justify-content:center;padding:32px 20px}
+  body{margin:0;color:var(--ink);font-family:var(--sans);
+    background:radial-gradient(ellipse 90% 60% at 50% -8%,#fffdf9 0%,var(--paper) 60%);
+    display:flex;align-items:center;justify-content:center;padding:32px 20px;
+    position:relative;overflow:hidden}
 
-  .wrap{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;
-    text-align:center;gap:6px}
+  .bg-glyph{position:fixed;top:-12%;right:-8%;font-family:var(--serif);font-weight:bold;
+    font-size:min(76vw,660px);line-height:1;color:var(--scarlet);opacity:.055;
+    transform:rotate(-6deg);pointer-events:none;user-select:none;z-index:0}
+
+  .wrap{position:relative;z-index:1;width:100%;max-width:480px;display:flex;
+    flex-direction:column;align-items:center;text-align:center;gap:6px}
+
+  @keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .avatar,.name,.tagline,.cta,.social,.source-link{animation:riseIn .55s ease both}
+  .name{animation-delay:.05s}
+  .tagline{animation-delay:.12s}
+  .cta{animation-delay:.2s}
+  .social{animation-delay:.28s}
+  .source-link{animation-delay:.35s}
 
   .avatar{width:160px;height:160px;border-radius:50%;overflow:hidden;position:relative;
     display:flex;align-items:center;justify-content:center;background:var(--paper-2);
@@ -79,6 +93,8 @@
 </style>
 </head>
 <body>
+
+<div class="bg-glyph" aria-hidden="true">&sum;</div>
 
 <main class="wrap">
   <div class="avatar" aria-hidden="true">
