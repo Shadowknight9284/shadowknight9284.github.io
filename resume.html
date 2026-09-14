@@ -192,8 +192,10 @@
   .tex-section+.tex-p::first-letter{float:left;font-family:'CM Serif',Georgia,serif;
     font-size:2.6em;line-height:.78;font-weight:bold;padding:2px 6px 0 0}
 
-  /* \includegraphics placeholder frame */
+  /* \includegraphics: real image, with a placeholder frame when it fails to load */
   .tex-figure{margin:12px auto;text-align:center}
+  .tex-figure-img{width:140px;height:140px;margin:0 auto;display:block;object-fit:cover;
+    border-radius:10px;border:1px solid #e3e5e8}
   .tex-figure-frame{width:140px;height:140px;margin:0 auto;border:2px dashed #c3c6cb;border-radius:10px;
     display:flex;align-items:center;justify-content:center;color:#a7abb1;background:#fafafa}
   .tex-figure-caption{margin-top:5px;font-size:.72em;color:#9599a0;font-family:var(--mono)}
@@ -554,11 +556,16 @@ var ResumeTeX = (function () {
     scshape:"tex-sc",bfseries:"tex-bf",itshape:"tex-it",it:"tex-it",bf:"tex-bf",sc:"tex-sc"};
   var WRAP={textbf:"strong",textit:"em",emph:"em",underline:"u",texttt:"code",textsc:"span"};
   function unescapeUrl(u){return u.replace(/\\([%&#_${}])/g,"$1");}
-  function figureHtml(path){return '<div class="tex-figure"><div class="tex-figure-frame">'+
-    '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6">'+
-    '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/>'+
-    '<path d="M21 15l-5-4-4 3-3-2-6 5"/></svg></div>'+
-    '<div class="tex-figure-caption">'+escText(path)+'</div></div>';}
+  function figureHtml(path){var p=escText(path).replace(/"/g,"&quot;");
+    return '<div class="tex-figure">'+
+      '<img class="tex-figure-img" src="'+p+'" alt="" onerror="var w=this.parentNode;'+
+      'this.remove();w.querySelector(\'.tex-figure-ph\').style.display=\'block\'">'+
+      '<div class="tex-figure-ph" style="display:none">'+
+      '<div class="tex-figure-frame">'+
+      '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6">'+
+      '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/>'+
+      '<path d="M21 15l-5-4-4 3-3-2-6 5"/></svg></div>'+
+      '<div class="tex-figure-caption">'+p+'</div></div></div>';}
   function renderMath(x){return x.replace(/\\bullet/g,"•").replace(/\\cdot/g,"·")
     .replace(/\\times/g,"×").replace(/\\%/g,"%").replace(/[{}]/g,"")
     .replace(/\\[a-zA-Z]+/g,"").replace(/[&<>]/g,escChar);}
