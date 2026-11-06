@@ -152,9 +152,12 @@
     transcribe it.</p>
   <ul>
     <li><b>Voice notes</b> in Telegram are transcribed, and replies come back as voice bubbles.</li>
-    <li><b>Live voice channels</b> in Discord: Geass joins, listens, and answers out loud. I tuned this for conversation
-      rather than dictation: it answers after 0.8 s of silence, keeps replies to a sentence or two,
-      and <b>stops the moment I talk over it</b> or say "stop".</li>
+    <li><b>Live voice channels</b> in Discord: Geass joins, listens, and answers out loud, in a sentence or two. It
+      stays out of the way while I work: it only answers when I say <b>"Geass"</b>, or within 20 seconds of its
+      last reply so a back-and-forth flows normally.</li>
+    <li><b>Interrupting is explicit.</b> Saying "stop", "wait", "hold on" or "I have another question" cuts it off;
+      "wait, what about Friday?" cuts it off and asks the new question. Everything else I say while it's talking
+      is ignored. (Version 1 stopped whenever I made a sound, which cut off five of eight answers.)</li>
     <li>First measured session: median 2.1 s to think and 6.3 s from my last word to its first word. The gap is
       mostly reply length, which is what the short-reply mode targets.</li>
   </ul>
@@ -197,8 +200,9 @@
       lives in files it has to look up.</li>
     <li><b>No browser, no images, no vision.</b> The model is text-only and those tools aren't set up. Web access is
       search plus page reading.</li>
-    <li><b>Voice is good, not instant.</b> Replies are synthesized whole before playback, background noise sometimes
-      transcribes as words, it's English-only in practice, and the voice-channel tuning is a local patch I re-apply
+    <li><b>Voice is good, not instant.</b> Replies are synthesized whole before playback, an interrupt lands about a
+      second after I say it (it waits for me to finish the word), the wake word depends on speech recognition
+      hearing "Geass" correctly, it's English-only in practice, and the voice-channel tuning is a local patch I re-apply
       after framework updates.</li>
     <li><b>It's one homelab.</b> If the speech VM or the LLM box is down, so is that part of Geass; there's no cloud fallback.</li>
   </ul>
