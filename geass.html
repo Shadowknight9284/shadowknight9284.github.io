@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geass — Pranav Tikkawar</title>
+<meta name="description" content="Geass: a self-hosted personal agent on a local model. Tools, skills, voice, scheduled jobs, guardrails and limitations.">
+<style>
+  @font-face{font-family:'CM Serif';font-weight:normal;font-style:normal;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunrm.woff') format('woff');}
+  @font-face{font-family:'CM Serif';font-weight:bold;font-style:normal;font-display:swap;
+    src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/font/Serif/cmunbx.woff') format('woff');}
+  :root{
+    --paper:#faf8f4; --paper-2:#f1ede4; --line:#e3ddd0; --ink:#1c1b19; --ink-soft:#5c564d;
+    --scarlet:#a6132a; --scarlet-dark:#84101f; --scarlet-tint:rgba(166,19,42,.08);
+    --ok:#2f6b3a; --ok-tint:rgba(47,107,58,.10); --no:#8a5a12; --no-tint:rgba(138,90,18,.10);
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:'CM Serif',Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font-family:var(--sans);line-height:1.55;
+    background:radial-gradient(ellipse 90% 40% at 50% -5%,#fffdf9 0%,var(--paper) 60%) var(--paper)}
+  .bg-glyph{position:fixed;top:-10%;right:-10%;font-family:var(--serif);font-weight:bold;
+    font-size:min(70vw,600px);line-height:1;color:var(--scarlet);opacity:.045;transform:rotate(-6deg);
+    pointer-events:none;user-select:none;z-index:0}
+  main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:40px 16px 64px}
+  a{color:var(--scarlet)} a:hover{color:var(--scarlet-dark)}
+  .back{font-size:.85em;text-decoration:none;border-bottom:1px dotted currentColor;color:var(--ink-soft)}
+  h1{font-family:var(--serif);font-size:2.6em;line-height:1.05;margin:18px 0 6px}
+  h2{font-family:var(--serif);font-size:1.55em;margin:48px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:1em;margin:22px 0 6px}
+  .lede{font-size:1.08em;color:var(--ink-soft);margin:0 0 6px;max-width:680px}
+  .meta{font-size:.8em;color:var(--ink-soft)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;margin:22px 0 0;font-size:.88em}
+  nav.toc a{text-decoration:none;color:var(--ink-soft);border-bottom:1px dotted currentColor}
+  nav.toc a:hover{color:var(--scarlet)}
+  code{font-family:var(--mono);font-size:.86em;background:var(--paper-2);padding:1px 5px;border-radius:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
+  .card{background:#fffdf9;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .card .k{font-size:.74em;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft)}
+  .card .v{font-family:var(--serif);font-weight:bold;font-size:1.25em;margin-top:2px}
+  .card .s{font-size:.84em;color:var(--ink-soft)}
+  .table-wrap{overflow-x:auto;margin:12px 0}
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:.78em;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);font-weight:600}
+  td:first-child{white-space:nowrap;font-weight:600}
+  .pill{display:inline-block;font-size:.76em;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+  .pill.ok{background:var(--ok-tint);color:var(--ok)} .pill.no{background:var(--no-tint);color:var(--no)}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+  .tags span{font-family:var(--mono);font-size:.78em;background:#fffdf9;border:1px solid var(--line);
+    border-radius:6px;padding:2px 7px}
+  .tags span.mine{border-color:var(--scarlet);background:var(--scarlet-tint);color:var(--scarlet-dark)}
+  ul{padding-left:1.2em} li{margin:4px 0}
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+  .flow .box{flex:1 1 150px;background:#fffdf9;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.88em}
+  .flow .box b{display:block;font-family:var(--serif);font-size:1.08em;margin-bottom:2px}
+  .flow .arrow{align-self:center;color:var(--scarlet);font-weight:bold}
+  .note{border-left:3px solid var(--scarlet);background:var(--scarlet-tint);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.92em}
+  footer{margin-top:56px;font-size:.8em;color:var(--ink-soft)}
+  @media (max-width:560px){h1{font-size:2.1em} .flow .arrow{transform:rotate(90deg);flex-basis:100%;text-align:center}
+    td:first-child{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="bg-glyph" aria-hidden="true">&Gamma;</div>
+<main>
+  <a class="back" href="index.html">&larr; Pranav Tikkawar</a>
+  <h1>Geass</h1>
+  <p class="lede">My self-hosted personal agent. It runs on my homelab on a local open-weight model, talks to me over
+    Telegram and Discord (including live voice channels), and runs 35 scheduled jobs that keep my GRE prep,
+    job search and PhD applications on track. It drafts; it never sends.</p>
+  <p class="meta">Built on the open-source <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener">Hermes Agent</a>
+    framework (Nous Research), v0.22.5. Inventory as of November 6, 2026.</p>
+  <nav class="toc" aria-label="On this page">
+    <a href="#glance">At a glance</a><a href="#how">How it fits together</a><a href="#tools">Tools</a>
+    <a href="#mcp">MCP servers</a><a href="#skills">Skills</a><a href="#voice">Voice</a><a href="#jobs">Scheduled jobs</a>
+    <a href="#rules">Guardrails</a><a href="#limits">Limitations</a><a href="#next">What's next</a>
+  </nav>
+
+  <h2 id="glance">At a glance</h2>
+  <div class="grid">
+    <div class="card"><div class="k">Model</div><div class="v">Qwen3-Coder-30B-A3B</div><div class="s">served locally with vLLM on 2&times; RTX 3090, 64K context, native tool calling</div></div>
+    <div class="card"><div class="k">Talk to it</div><div class="v">Telegram &middot; Discord</div><div class="s">text, voice notes, and live Discord voice channels; plus a terminal CLI</div></div>
+    <div class="card"><div class="k">Voice</div><div class="v">Whisper + Kokoro</div><div class="s">speech-to-text and text-to-speech on a GTX 1080, about 1 s round trip</div></div>
+    <div class="card"><div class="k">Abilities</div><div class="v">19 tool groups &middot; 59 skills</div><div class="s">plus 2 MCP servers and 35 scheduled jobs</div></div>
+  </div>
+
+  <h2 id="how">How it fits together</h2>
+  <div class="flow" role="list">
+    <div class="box" role="listitem"><b>Me</b>Telegram, Discord text, Discord voice channel</div>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <div class="box" role="listitem"><b>Geass (agent VM)</b>gateway, tools, skills, memory, scheduler, my <code>~/life</code> repo</div>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <div class="box" role="listitem"><b>GPU boxes</b>LLM server (2&times; 3090), speech server (GTX 1080), embeddings + vector search</div>
+  </div>
+  <p>Everything runs on Proxmox VMs at home. The only outside calls are web searches and the chat platforms
+    themselves; prompts, mail and notes are processed by the local model. A separate research instance on my
+    coding VM hands larger coding tasks to Claude Code and Codex workers, which work on branches and report back
+    in a short <code>RESULT.md</code>.</p>
+
+  <h2 id="tools">Built-in tools</h2>
+  <p>What Geass can do on its own, by tool group, in Telegram and Discord.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Group</th><th>What it does</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Web search</td><td>Search and read pages (keyless providers with automatic failover)</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Terminal &amp; code</td><td>Run shell commands and Python on its own VM</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Files</td><td>Read and edit files, mainly my <code>~/life</code> repo (plans, trackers, logs)</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Memory</td><td>Small persistent notes about me and about itself across conversations</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Session search</td><td>Look up earlier conversations</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Delegation</td><td>Split a task into parallel sub-agents on the same local model</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Scheduling</td><td>Create and edit its own cron jobs</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Planning &amp; questions</td><td>To-do lists for multi-step work; asks me to clarify instead of guessing</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Speech</td><td>Voice replies and transcription through my speech server</td><td><span class="pill ok">working</span></td></tr>
+      <tr><td>Discord server tools</td><td>Read channel history and manage the server as a tool (replying in channels and joining voice channels works without it)</td><td><span class="pill no">not set up</span></td></tr>
+      <tr><td>Browser automation</td><td>Drive a real browser</td><td><span class="pill no">not set up</span></td></tr>
+      <tr><td>Images &amp; video</td><td>Generate or analyse images and video</td><td><span class="pill no">not set up</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="mcp">MCP servers</h2>
+  <p>Extra tools plugged in through the Model Context Protocol.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Server</th><th>Tools</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>speaches <span class="meta">(mine)</span></td><td><code>speak</code> text to an audio file in any voice &middot;
+        <code>transcribe</code> an audio file &middot; <code>list_voices</code> &middot; <code>speech_server_status</code></td><td><span class="pill ok">on</span></td></tr>
+      <tr><td>linear</td><td>Issue tracking (hosted)</td><td><span class="pill no">off</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="skills">Skills</h2>
+  <p>Skills are instruction packs Geass loads only when a task needs them. 59 are installed; the highlighted
+    ones I wrote for my own workflow.</p>
+  <h3>Mine</h3>
+  <div class="tags"><span class="mine">gre-prep-strategy</span><span class="mine">tailor-resume</span><span class="mine">google-accounts</span><span class="mine">fibonacci-video-project</span></div>
+  <h3>Research</h3>
+  <div class="tags"><span>arxiv</span><span>grounded-citations</span><span>llm-wiki</span><span>competitor-news-monitor</span></div>
+  <h3>Coding &amp; other agents</h3>
+  <div class="tags"><span>claude-code</span><span>codex</span><span>opencode</span><span>github</span><span>codebase-inspection</span><span>systematic-debugging</span><span>test-driven-development</span><span>requesting-code-review</span><span>simplify-code</span><span>spike</span><span>python-debugpy</span><span>node-inspect-debugger</span><span>dogfood</span></div>
+  <h3>Productivity &amp; documents</h3>
+  <div class="tags"><span>google-workspace</span><span>email-inbox-triage</span><span>himalaya</span><span>weekly-review-planning</span><span>meeting-action-items</span><span>document-to-action-items</span><span>notion</span><span>obsidian</span><span>airtable</span><span>pdf</span><span>docx</span><span>xlsx</span><span>powerpoint</span><span>maps</span></div>
+  <h3>Creative &amp; media</h3>
+  <div class="tags"><span>manim-video</span><span>p5js</span><span>architecture-diagram</span><span>baoyu-infographic</span><span>humanizer</span><span>youtube-content</span><span>songsee</span></div>
+  <p class="meta">The rest are framework utilities (self-inspection, skill authoring, design helpers, page recovery).</p>
+
+  <h2 id="voice">Voice</h2>
+  <p>Speech runs on a dedicated VM with a GTX 1080: Whisper large-v3-turbo (int8) for transcription and
+    Kokoro-82M for speech, behind an OpenAI-compatible API. Measured warm: 0.44 s to speak a sentence, 0.60 s to
+    transcribe it.</p>
+  <ul>
+    <li><b>Voice notes</b> in Telegram are transcribed, and replies come back as voice bubbles.</li>
+    <li><b>Live voice channels</b> in Discord: Geass joins, listens, and answers out loud. I tuned this for conversation
+      rather than dictation: it answers after 0.8 s of silence, keeps replies to a sentence or two,
+      and <b>stops the moment I talk over it</b> or say "stop".</li>
+    <li>First measured session: median 2.1 s to think and 6.3 s from my last word to its first word. The gap is
+      mostly reply length, which is what the short-reply mode targets.</li>
+  </ul>
+
+  <h2 id="jobs">Scheduled jobs</h2>
+  <p>35 jobs, each posting to its own Discord channel, with the urgent ones also on Telegram.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Area</th><th>Jobs</th></tr></thead>
+    <tbody>
+      <tr><td>Daily brief</td><td>Morning brief, tomorrow's calendar, weekly review, kanban sweep</td></tr>
+      <tr><td>GRE</td><td>Morning plan, evening check-in, vocab drills, weekly progress</td></tr>
+      <tr><td>Job search</td><td>Board scout (51 company boards), LLM scout, daily application packs with tailored r&eacute;sum&eacute;s, follow-ups, quota, online-assessment drills, interview packs, funnel stats, dead-posting checks</td></tr>
+      <tr><td>PhD applications</td><td>Deadline sweep, application mail watch, write-up nudges</td></tr>
+      <tr><td>Inbox</td><td>Tracker updates from mail, "needs a reply" and "needs action" digests (drafts only)</td></tr>
+      <tr><td>Research</td><td>Weekly arXiv digest; overnight paper notes, tech scouting and code review from the research instance</td></tr>
+      <tr><td>System</td><td>Health check every 30 min, nightly encrypted backups, repo guard, monthly self-review</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="rules">Guardrails</h2>
+  <ul>
+    <li><b>Drafts only.</b> It never sends an email or submits an application. Reply drafts that would commit me to
+      anything ("yes, I can meet") are rewritten as <code>[YES/NO: …]</code> for me to decide.</li>
+    <li><b>Scripts for exact work, the model for fuzzy work.</b> Fetching, counting, parsing and file generation are
+      deterministic Python; the model summarizes, drafts and coaches.</li>
+    <li><b>R&eacute;sum&eacute; facts come only from what I wrote</b>, and I approve them.</li>
+    <li><b>Allowlisted users only</b> on every chat platform; secrets stay on the machines, never in repos.</li>
+    <li><b>Prompt regression tests</b> (26 checks) run whenever a prompt, the model or the server version changes.</li>
+  </ul>
+
+  <h2 id="limits">Limitations</h2>
+  <div class="note">An honest list. Most of these come from running a mid-size local model on home hardware.</div>
+  <ul>
+    <li><b>The model is a coding model.</b> Its prose reads a little mechanical, and left alone it agrees to meetings on
+      my behalf; a second pass catches that. It once claimed to have read PDFs it hadn't, which is why exact steps
+      moved into scripts.</li>
+    <li><b>64K context.</b> Tool and skill descriptions alone take 16&ndash;21K tokens per turn, so long documents get
+      summarized or chunked, not read whole.</li>
+    <li><b>Small memory.</b> About 2,200 characters of notes plus a 1,375-character profile of me; anything bigger
+      lives in files it has to look up.</li>
+    <li><b>No browser, no images, no vision.</b> The model is text-only and those tools aren't set up. Web access is
+      search plus page reading.</li>
+    <li><b>Voice is good, not instant.</b> Replies are synthesized whole before playback, background noise sometimes
+      transcribes as words, it's English-only in practice, and the voice-channel tuning is a local patch I re-apply
+      after framework updates.</li>
+    <li><b>It's one homelab.</b> If the speech VM or the LLM box is down, so is that part of Geass; there's no cloud fallback.</li>
+  </ul>
+
+  <h2 id="next">What's next</h2>
+  <ul>
+    <li><b>Research partner by voice:</b> "Geass, explore an idea: …" creates a fresh workspace for a math question
+      (notes, references, small-case experiments, a LaTeX draft), runs a first pass with a coding agent, and reads
+      me a 200-word summary.</li>
+    <li><b>Search my notes from chat:</b> my math notes and repos are already indexed for vector search; next is
+      exposing that as a tool.</li>
+    <li><b>A writing model</b> next to the coding model, adopted only if it beats it on the same regression tests.</li>
+    <li><b>Streaming speech,</b> so it starts talking after the first sentence instead of the whole reply.</li>
+  </ul>
+
+  <footer>Last updated November 6, 2026 &middot; <a href="index.html">home</a> &middot; <a href="resume.html">r&eacute;sum&eacute;</a></footer>
+</main>
+</body>
+</html>
