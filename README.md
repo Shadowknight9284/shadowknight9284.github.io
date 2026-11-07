@@ -10,6 +10,9 @@ tree, a real editor pane on the left, a rendered page on the right, and a compil
 drawer underneath. Edit the source and it recompiles as you type. Break the syntax and the
 log drawer tells you what broke, the way a real one would.
 
+**[`geass.html`](geass.html)**: what Geass, my self-hosted agent, can and can't do: tools, MCP servers,
+skills, voice, scheduled jobs, guardrails and limitations. Plain static HTML, no scripts.
+
 ## ResumeTeX
 
 The renderer is not a screenshot and not a PDF embed — it's a small LaTeX interpreter
